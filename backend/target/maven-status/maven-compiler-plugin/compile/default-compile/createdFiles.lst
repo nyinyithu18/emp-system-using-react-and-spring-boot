@@ -1,0 +1,16 @@
+com\backend\backend\BackendApplication.class
+com\backend\backend\service\empserviceimpl\DepServiceImpl.class
+com\backend\backend\service\RankService.class
+com\backend\backend\service\EmpService.class
+com\backend\backend\service\empserviceimpl\EmpServiceImpl.class
+com\backend\backend\controller\EmpController.class
+com\backend\backend\controller\RankController.class
+com\backend\backend\model\EmpModel.class
+com\backend\backend\repository\RankRepository.class
+com\backend\backend\service\DepService.class
+com\backend\backend\model\DepModel.class
+com\backend\backend\model\RankModel.class
+com\backend\backend\repository\DepRepository.class
+com\backend\backend\repository\EmpRepository.class
+com\backend\backend\service\empserviceimpl\RankServiceImpl.class
+com\backend\backend\controller\DepController.class

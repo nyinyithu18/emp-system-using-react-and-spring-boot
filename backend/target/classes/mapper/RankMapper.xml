@@ -1,0 +1,15 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+	<mapper namespace="com.backend.backend.repository.RankRepository">
+		
+		<resultMap id="RankResultMap" type="RankModel">
+    		<id column="rank_id" property="rank_id" />
+    		<result column="rank_name" property="rank_name" />
+    	</resultMap>
+		
+		<select id="rankList" resultMap="RankResultMap">
+    		SELECT rank_id, rank_name FROM emp_rank;
+    	</select>
+	</mapper>

@@ -1,0 +1,38 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+	<mapper namespace="com.backend.backend.repository.EmpRepository">
+		
+		<resultMap id="EmpResultMap" type="EmpModel">
+    		<id column="emp_id" property="emp_id" />
+    		<result column="emp_name" property="emp_name" />
+    		<result column="nrc" property="nrc" />
+    		<result column="phone" property="phone" />
+    		<result column="email" property="email" />
+    		<result column="dob" property="dob" />
+    		<result column="rank" property="rank" />
+    		<result column="department" property="dep" />
+    		<result column="address" property="address" />
+    	</resultMap>
+    	
+    	<insert id="addEmp" parameterType="EmpModel">
+    		INSERT INTO employee (emp_name, nrc, phone, email, dob, rank, department, address) VALUES (#{emp_name}, #{nrc}, #{phone}, #{email}, #{dob}, #{rank}, #{dep}, #{address});
+    	</insert>
+		
+		<delete id="deleteEmp" parameterType="int">
+			DELETE FROM employee WHERE emp_id = #{emp_id};
+		</delete>
+		
+		<select id="empList" resultMap="EmpResultMap">
+    		SELECT emp_id, emp_name, nrc, phone, email, dob, rank, department, address FROM employee;
+    	</select>
+    	
+    	<select id="searchById" resultMap="EmpResultMap" parameterType="int">
+    		SELECT emp_id, emp_name, nrc, phone, email, dob, rank, department, address FROM employee WHERE emp_id = #{emp_id};
+    	</select>
+    	
+    	<update id="editEmp" parameterType="EmpModel">
+			UPDATE employee SET emp_name = #{emp_name}, nrc=#{nrc}, phone=#{phone}, email=#{email}, dob=#{dob}, rank=#{rank}, department=#{department}, address=#{address} WHERE emp_id=#{emp_id}; 
+		</update>
+	</mapper>

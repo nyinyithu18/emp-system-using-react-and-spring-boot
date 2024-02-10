@@ -1,0 +1,31 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+    <mapper namespace="com.backend.backend.repository.LeaveRepository">
+		<resultMap id="LeaveResultMap" type="LeaveModel">
+    		<id column="leave_id" property="leave_id" />
+    		<result column="leave_type" property="leave_type" />
+    		<result column="from_date" property="from_date" />
+    		<result column="to_date" property="to_date" />
+    		<result column="days" property="days" />
+    	</resultMap>
+    	
+    	<insert id="addLeave" parameterType="LeaveModel">
+    		INSERT INTO empleave (leave_type, from_date, to_date, days) VALUES (#{leave_type}, #{from_date}, #{to_date}, #{days});
+    	</insert>
+		
+		<delete id="deleteLeave" parameterType="int">
+			DELETE FROM empleave WHERE leave_id = #{leave_id};
+		</delete>
+		
+		<select id="leaveList" resultMap="LeaveResultMap">
+    		SELECT leave_id, leave_type, from_date, to_date, days FROM employee;
+    	</select>
+    	
+    	
+    	
+    	<update id="editLeave" parameterType="LeaveModel">
+			UPDATE employee SET leave_type = #{leave_type}, from_date=#{from_date}, to_date=#{to_date}, days=#{days} WHERE leave_id=#{leave_id}; 
+		</update>
+	</mapper>
