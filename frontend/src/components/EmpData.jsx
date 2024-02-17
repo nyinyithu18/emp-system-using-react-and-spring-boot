@@ -293,9 +293,6 @@ const EmpData = () => {
             >
               Save
             </Button>
-            <Button type="button" className="btn bg-red-500">
-              Delete
-              </Button>
             <Link to="/empList">
               <Button className="btn bg-blue-500">List</Button>
             </Link>
