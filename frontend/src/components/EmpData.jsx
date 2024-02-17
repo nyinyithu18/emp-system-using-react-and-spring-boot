@@ -178,7 +178,7 @@ const EmpData = () => {
               <TextInput
                 id="email"
                 value={email}
-                onChange={handleEmailChange}
+                onChange={(e)=> setEmail(e.target.value)}
                 type="text"
                 sizing="md"
                 className="w-96"
