@@ -41,5 +41,31 @@ private String dep;
 @Setter
 private String address;
 
+@Getter
+@Setter
+private boolean checkdelete;
 
+@Getter
+@Setter
+private int leave_id;
+
+@Getter
+@Setter
+private String leave_type;
+
+@Getter
+@Setter
+private String from_date;
+
+@Getter
+@Setter
+private String to_date;
+
+@Getter
+@Setter
+private int days;
+
+@Getter
+@Setter
+private boolean deleted;
 }

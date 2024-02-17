@@ -14,10 +14,11 @@
     		<result column="rank" property="rank" />
     		<result column="department" property="dep" />
     		<result column="address" property="address" />
+    		<result column="checkdelete" property="checkdelete" />
     	</resultMap>
     	
     	<insert id="addEmp" parameterType="EmpModel">
-    		INSERT INTO employee (emp_name, nrc, phone, email, dob, rank, department, address) VALUES (#{emp_name}, #{nrc}, #{phone}, #{email}, #{dob}, #{rank}, #{dep}, #{address});
+    		INSERT INTO employee (emp_name, nrc, phone, email, dob, rank, department, address, checkdelete) VALUES (#{emp_name}, #{nrc}, #{phone}, #{email}, #{dob}, #{rank}, #{dep}, #{address}, #{checkdelete});
     	</insert>
 		
 		<delete id="deleteEmp" parameterType="int">
@@ -33,6 +34,6 @@
     	</select>
     	
     	<update id="editEmp" parameterType="EmpModel">
-			UPDATE employee SET emp_name = #{emp_name}, nrc=#{nrc}, phone=#{phone}, email=#{email}, dob=#{dob}, rank=#{rank}, department=#{department}, address=#{address} WHERE emp_id=#{emp_id}; 
+			UPDATE employee SET emp_name = #{emp_name}, nrc=#{nrc}, phone=#{phone}, email=#{email}, dob=#{dob}, rank=#{rank}, department=#{dep}, checkdelete=#{checkdelete}, address=#{address} WHERE emp_id=#{emp_id}; 
 		</update>
 	</mapper>

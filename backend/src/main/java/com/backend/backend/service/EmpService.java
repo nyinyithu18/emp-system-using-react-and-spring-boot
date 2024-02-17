@@ -10,5 +10,5 @@ public interface EmpService {
 	public int deleteEmp(int emp_id);
 	public List<EmpModel> empList();
 	public EmpModel searchById(int emp_id);
-	public int editEmp(EmpModel emp_id);
+	public int editEmp(EmpModel empModel);
 }

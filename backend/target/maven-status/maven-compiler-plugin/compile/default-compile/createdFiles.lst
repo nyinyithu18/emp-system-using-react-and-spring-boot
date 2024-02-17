@@ -8,7 +8,6 @@ com\backend\backend\repository\RankRepository.class
 com\backend\backend\service\DepService.class
 com\backend\backend\service\empserviceimpl\RankServiceImpl.class
 com\backend\backend\controller\LeaveController.class
-com\backend\backend\model\LeaveModel.class
 com\backend\backend\service\LeaveService.class
 com\backend\backend\service\RankService.class
 com\backend\backend\service\EmpService.class

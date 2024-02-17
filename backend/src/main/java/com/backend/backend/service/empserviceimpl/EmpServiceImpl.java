@@ -36,8 +36,8 @@ public class EmpServiceImpl implements EmpService{
 	}
 
 	@Override
-	public int editEmp(EmpModel emp_id) {
-		return empRepository.editEmp(emp_id);
+	public int editEmp(EmpModel empModel) {
+		return empRepository.editEmp(empModel);
 	}
 
 }
