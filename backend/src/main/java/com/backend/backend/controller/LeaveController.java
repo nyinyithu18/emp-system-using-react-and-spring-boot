@@ -1,6 +1,6 @@
 package com.backend.backend.controller;
 
-import java.util.List;   
+import java.util.List;    
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -58,10 +58,17 @@ public class LeaveController {
 		return leaveServiceImpl.empLeaveList();
 	}
 	
+	@GetMapping(value = "/searchByLeaveId", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public EmpModel searchByLeaveId(@RequestParam (name = "leave_id") String leave_id) {
+		int leaveId = Integer.parseInt(leave_id);
+		return leaveServiceImpl.searchByLeaveId(leaveId);
+	}
+	
 	@PutMapping(value = "editLeave", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	public int editLeave(@RequestBody EmpModel empModel) {
-		return leaveServiceImpl.editLeave(empModel);
+		return leaveServiceImpl.editLeave(empModel);		
 	}
 
 }

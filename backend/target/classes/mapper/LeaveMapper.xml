@@ -27,7 +27,7 @@
 		</insert>
 		
 		<insert id="addEmployee" parameterType="EmpModel">
-			INSERT INTO employee (emp_name, nrc, phone, email, dob, rank, department, address, checkdelete) VALUES (#{emp_name}, #{nrc}, #{phone}, #{email}, #{dob}, #{rank}, #{dep}, #{address}, #{checkdelete});
+			INSERT INTO employee (emp_id, emp_name, nrc, phone, email, dob, rank, department, address, checkdelete) VALUES (#{emp_id}, #{emp_name}, #{nrc}, #{phone}, #{email}, #{dob}, #{rank}, #{dep}, #{address}, #{checkdelete});
 		</insert>
 		
 		<delete id="deleteLeave" parameterType="int">
@@ -38,11 +38,14 @@
     		SELECT leave_id, emp_id, leave_type, from_date, to_date, days, deleted FROM empleave;
     	</select>
     	
+    	<select id="searchByLeaveId" resultMap="LeaveResultMap" parameterType="int">
+    		SELECT leave_id, emp_id, leave_type, from_date, to_date, days, deleted FROM empleave WHERE leave_id=#{leave_id};
+    	</select>
+    	
     	<select id="empLeaveList" resultMap="LeaveResultMap">
-			SELECT employee.emp_id, employee.emp_name, employee.nrc, employee.phone, employee.email, employee.dob, employee.rank, employee.department, employee.address, employee.checkdelete , empleave.leave_id, empleave.leave_type, empleave.from_date, empleave.to_date, empleave.days, empleave.deleted FROM employee INNER JOIN empleave ON employee.emp_id = empleave.emp_id ORDER BY employee.emp_id; 
+			SELECT employee.emp_id, employee.emp_name, employee.nrc, employee.phone, employee.email, employee.dob, employee.rank, employee.department, employee.address, employee.checkdelete , empleave.leave_type, empleave.leave_id, empleave.from_date, empleave.to_date, empleave.days, empleave.deleted FROM employee FULL OUTER JOIN empleave ON employee.emp_id = empleave.emp_id ORDER BY employee.emp_id;  
 		</select>
-    	
-    	
+
     	<update id="editLeave" parameterType="EmpModel">
 			UPDATE empleave SET emp_id=#{emp_id}, leave_type = #{leave_type}, from_date=#{from_date}, to_date=#{to_date}, days=#{days}, deleted=#{deleted} WHERE leave_id=#{leave_id}; 
 		</update>

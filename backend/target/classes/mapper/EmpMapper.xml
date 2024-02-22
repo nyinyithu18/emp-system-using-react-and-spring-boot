@@ -18,7 +18,7 @@
     	</resultMap>
     	
     	<insert id="addEmp" parameterType="EmpModel">
-    		INSERT INTO employee (emp_name, nrc, phone, email, dob, rank, department, address, checkdelete) VALUES (#{emp_name}, #{nrc}, #{phone}, #{email}, #{dob}, #{rank}, #{dep}, #{address}, #{checkdelete});
+    		INSERT INTO employee (emp_id, emp_name, nrc, phone, email, dob, rank, department, address, checkdelete) VALUES (#{emp_id}, #{emp_name}, #{nrc}, #{phone}, #{email}, #{dob}, #{rank}, #{dep}, #{address}, #{checkdelete});
     	</insert>
 		
 		<delete id="deleteEmp" parameterType="int">
@@ -26,7 +26,7 @@
 		</delete>
 		
 		<select id="empList" resultMap="EmpResultMap">
-    		SELECT emp_id, emp_name, nrc, phone, email, dob, rank, department, address FROM employee;
+    		SELECT emp_id, emp_name, nrc, phone, email, dob, rank, department, address, checkdelete FROM employee;
     	</select>
     	
     	<select id="searchById" resultMap="EmpResultMap" parameterType="int">

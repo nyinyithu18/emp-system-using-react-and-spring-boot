@@ -6,7 +6,7 @@ import ExcelExport from "./ExcelExport";
 import { editEmployeeData } from "../service/EmpService";
 import EmpTableData from "./EmpTableData";
 import EmpTablePagination from "./EmpTablePagination";
-import axios from "axios";
+import ImportExcel from "./ImportExcel";
 
 const EmpList = () => {
   const [empData, setEmpData] = useState([]);
@@ -16,7 +16,9 @@ const EmpList = () => {
   const fileName = "Emp Datas";
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [postPerPage] = useState(5);
+  const [postPerPage] = useState(12);
+
+  const [count, setCount] = useState(0);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -31,35 +33,6 @@ const EmpList = () => {
   const FetchEmpLeaveData = async () => {
     const res = await api.get("/empLeaveList");
     setEmpLeaveData(res.data);
-  };
-
-  const [file, setFile] = useState(null);
-
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
-  };
-
-  // Import Excel file
-  const handleFileUpload = async () => {
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      if (file != null) {
-        await axios.post("http://localhost:8080/uploadFile", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-        setFile(null);
-        alert("File uploaded successfully");
-        console.log("success");
-      } else {
-        alert("Please choose excel file on your device!");
-      }
-    } catch (error) {
-      console.error("Error uploading file:", error);
-    }
   };
 
   const fetchEditData = async (emp) => {
@@ -82,16 +55,17 @@ const EmpList = () => {
           fetchEditData(emp);
         }
       });
+      setCount(empData.length);
     }
   };
 
   useEffect(() => {
     FetchEmpData();
     FetchEmpLeaveData();
-  }, []);
+  }, [count]);
 
   return (
-    <div className="mt-6">
+    <div className="">
       <div className="flex justify-between mx-6">
         <div></div>
         <div className="flex flex-rows gap-4">
@@ -117,28 +91,19 @@ const EmpList = () => {
               }
             />
           </div>
-          <div>
-            <Link to="/">
-              <Button className="btn bg-blue-500 w-20">Go</Button>
-            </Link>
-          </div>
-
           <div className="flex">
-            <input
-              type="file"
-              className="border bg-slate-200 w-60 me-4 rounded-lg"
-              onChange={handleFileChange}
+            <ImportExcel
+              fetchEmpData={FetchEmpData}
+              fetchEmpLeaveData={FetchEmpLeaveData}
             />
-            <Button
-              type="button"
-              onClick={handleFileUpload}
-              className="btn bg-blue-500"
-            >
-              Import
-            </Button>
           </div>
           <div>
             <ExcelExport excelData={empLeaveData} fileName={fileName} />
+          </div>
+          <div>
+            <Link to="/">
+              <Button className="btn bg-blue-500 w-20">New</Button>
+            </Link>
           </div>
         </div>
       </div>

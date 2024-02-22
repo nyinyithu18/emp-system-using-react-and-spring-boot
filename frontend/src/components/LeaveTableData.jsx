@@ -1,90 +1,162 @@
-import { Button, Table } from "flowbite-react";
-import React from "react";
-import AddLeave from "./AddLeave";
-import { leaveEditData } from "../service/LeaveService";
+import { Button, Select, Table, TextInput } from "flowbite-react";
+import React, { useState } from "react";
 
-const LeaveTableData = ({ leaveData }) => {
-  // Fetch Edit Leave Data
-  const fetchEditData = async (leave) => {
-    await leaveEditData(leave);
-    console.log(leave);
+const LeaveTableData = () => {
+  const [leaveEntries, setLeaveEntries] = useState([
+    {
+      leave_type: "",
+      from_date: "",
+      to_date: "",
+      days: "",
+    },
+  ]);
+
+  const handleInputChange = (index, e) => {
+    const { name, value } = e.target;
+    const updatedEntries = [...leaveEntries];
+    updatedEntries[index][name] = value;
+
+    if (name === "from_date" || name === "to_date") {
+      const startDate = new Date(updatedEntries[index].from_date);
+      const endDate = new Date(updatedEntries[index].to_date);
+
+      // Check if both dates are valid
+      if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
+        const differenceInTime = endDate.getTime() - startDate.getTime();
+        const differenceInDays = Math.ceil(
+          differenceInTime / (1000 * 3600 * 24)
+        );
+        updatedEntries[index]["days"] = differenceInDays;
+      } else {
+        // If either date is invalid, set days to empty string or handle the error accordingly
+        updatedEntries[index]["days"] = "";
+      }
+    }
+
+    setLeaveEntries(updatedEntries);
   };
 
-  // Check delete Employee Data
-  const handleCheckDelete = (leave_id) => {
-    if (window.confirm("Are you sure?")) {
-      const editleavedata = leaveData.map((leave) => {
-        if (leave.leave_id == leave_id) {
-          return { ...leave, deleted: true };
-        }
-        return leave;
-      });
+  const handleLeaveTypeChange = (index, value) => {
+    const updatedEntries = [...leaveEntries];
+    updatedEntries[index]["leave_type"] = value;
+    setLeaveEntries(updatedEntries);
+  };
 
-      editleavedata.map((leave) => {
-        if (leave.leave_id === leave_id) {
-          fetchEditData(leave);
-        }
-      });
-    }
+  const handleAddEntry = () => {
+    setLeaveEntries([
+      ...leaveEntries,
+      {
+        leave_type: "",
+        from_date: "",
+        to_date: "",
+        days: "",
+      },
+    ]);
+  };
+
+  const handleRemoveEntry = (index) => {
+    const updatedEntries = [...leaveEntries];
+    updatedEntries.splice(index, 1);
+    setLeaveEntries(updatedEntries);
+  };
+
+  const leaveTypeDatas = [
+    { value: "Medical Leave", text: "Medical Leave" },
+    { value: "Casual Leave", text: "Casual Leave" },
+    { value: "Annual Leave", text: "Annual Leave" },
+    { value: "Earned Leave", text: "Earned Leave" },
+  ];
+
+  const handleSave = () => {
+    console.log(leaveEntries);
   };
 
   return (
-    <div className="overflow-x-auto mx-5 my-7">
-      <Table hoverable>
-        <Table.Head>
-          <Table.HeadCell>Employee ID</Table.HeadCell>
-          <Table.HeadCell>Leave Type</Table.HeadCell>
-          <Table.HeadCell>From Date</Table.HeadCell>
-          <Table.HeadCell>To Date</Table.HeadCell>
-          <Table.HeadCell>Days</Table.HeadCell>
-          <Table.HeadCell>
-            <AddLeave />
-          </Table.HeadCell>
-        </Table.Head>
-
-        <Table.Body className="divide-y">
-          {leaveData.length > 0 ? (
-            leaveData.map((leave, index) => {
-              if (leave.deleted == false) {
-                return (
-                  <Table.Row
-                    key={index}
-                    className="bg-white dark:border-gray-700 dark:bg-gray-800"
+    <>
+      <div className="overflow-x-auto">
+        <Table hoverable>
+          <Table.Head>
+            <Table.HeadCell>Leave Type</Table.HeadCell>
+            <Table.HeadCell>From Date</Table.HeadCell>
+            <Table.HeadCell>To Date</Table.HeadCell>
+            <Table.HeadCell>Days</Table.HeadCell>
+            <Table.HeadCell>
+              <Button
+                type="button"
+                onClick={handleAddEntry}
+                className="btn bg-blue-500"
+              >
+                Add
+              </Button>
+            </Table.HeadCell>
+          </Table.Head>
+          <Table.Body className="divide-y">
+            {leaveEntries.map((entry, index) => (
+              <Table.Row
+                key={index}
+                className="bg-white dark:border-gray-700 dark:bg-gray-800"
+              >
+                <Table.Cell>
+                  <Select
+                    id={`leave_type_${index}`}
+                    value={entry.leave_type}
+                    onChange={(e) =>
+                      handleLeaveTypeChange(index, e.target.value)
+                    }
+                    required
                   >
-                    <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                      {leave.emp_id}
-                    </Table.Cell>
-                    <Table.Cell>{leave.leave_type}</Table.Cell>
-                    <Table.Cell>{leave.from_date}</Table.Cell>
-                    <Table.Cell>{leave.to_date}</Table.Cell>
-                    <Table.Cell>{leave.days}</Table.Cell>
-                    <Table.Cell>
-                      <Button
-                        type="button"
-                        onClick={() => handleCheckDelete(leave.leave_id)}
-                        className="btn bg-red-500"
-                      >
-                        Delete
-                      </Button>
-                    </Table.Cell>
-                  </Table.Row>
-                );
-              }
-            })
-          ) : (
-            <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-              <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                No Data
-              </Table.Cell>
-              <Table.Cell>No Data</Table.Cell>
-              <Table.Cell>No Data</Table.Cell>
-              <Table.Cell>No Data</Table.Cell>
-              <Table.Cell>No Data</Table.Cell>
-            </Table.Row>
-          )}
-        </Table.Body>
-      </Table>
-    </div>
+                    {leaveTypeDatas.map((leave, index) => (
+                      <option key={index} value={leave.value}>
+                        {leave.text}
+                      </option>
+                    ))}
+                  </Select>
+                </Table.Cell>
+                <Table.Cell>
+                  <TextInput
+                    type="date"
+                    id={`from_date_${index}`}
+                    name="from_date"
+                    value={entry.from_date}
+                    onChange={(e) => handleInputChange(index, e)}
+                  />
+                </Table.Cell>
+                <Table.Cell>
+                  <TextInput
+                    type="date"
+                    id={`to_date_${index}`}
+                    name="to_date"
+                    value={entry.to_date}
+                    onChange={(e) => handleInputChange(index, e)}
+                  />
+                </Table.Cell>
+                <Table.Cell>
+                  <TextInput
+                    type="text"
+                    id={`days_${index}`}
+                    name="days"
+                    value={entry.days}
+                    readOnly // Make it read-only
+                  />
+                </Table.Cell>
+                <Table.Cell>
+                  <Button
+                    type="button"
+                    className="btn bg-red-500"
+                    onClick={() => handleRemoveEntry(index)}
+                  >
+                    Delete
+                  </Button>
+                </Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table>
+      </div>
+      <Button type="button" onClick={() => handleSave()}>
+        Save
+      </Button>
+    </>
   );
 };
 

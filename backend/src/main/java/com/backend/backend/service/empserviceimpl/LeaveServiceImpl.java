@@ -77,11 +77,12 @@ public class LeaveServiceImpl implements LeaveService{
             String address = getStringCellValue(row.getCell(8));
             boolean checkDelete = Boolean.parseBoolean(getStringCellValue(row.getCell(9)));
 			
-            String leaveType = getStringCellValue(row.getCell(10));
-            String fromDate = getStringCellValue(row.getCell(11));
-            String toDate = getStringCellValue(row.getCell(12));
-            int days = Integer.parseInt(getStringCellValue(row.getCell(13)));
-            boolean deleted = Boolean.parseBoolean(getStringCellValue(row.getCell(14)));
+            int leaveId = Integer.parseInt(getStringCellValue(row.getCell(10)));
+            String leaveType = getStringCellValue(row.getCell(11));
+            String fromDate = getStringCellValue(row.getCell(12));
+            String toDate = getStringCellValue(row.getCell(13));
+            int days = Integer.parseInt(getStringCellValue(row.getCell(14)));
+            boolean deleted = Boolean.parseBoolean(getStringCellValue(row.getCell(15)));
             
             EmpModel emp = new EmpModel();
 			
@@ -96,6 +97,7 @@ public class LeaveServiceImpl implements LeaveService{
 			emp.setAddress(address);
 			emp.setCheckdelete(checkDelete);
 			
+			emp.setLeave_id(leaveId);
             emp.setLeave_type(leaveType);
             emp.setFrom_date(fromDate);
             emp.setTo_date(toDate);
