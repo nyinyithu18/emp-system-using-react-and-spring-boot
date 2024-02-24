@@ -14,6 +14,7 @@ import { Link } from "react-router-dom";
 import { api } from "../api/ApiResources";
 import { leaveDataPost, leaveEditData } from "../service/LeaveService";
 import { useReactToPrint } from "react-to-print";
+import EmpDataPrint from "./EmpDataPrint";
 
 const EditEmpData = () => {
   const [empData, setEmpData] = useState({
@@ -38,8 +39,6 @@ const EditEmpData = () => {
   // For Emp image upload
   const inputRef = useRef(null);
   const [image, setImages] = useState("");
-
-  const printRef = useRef();
 
   // For Validation
   const [nameError, setNameError] = useState("");
@@ -105,12 +104,12 @@ const EditEmpData = () => {
           //Put Edit Leave Data
           const leaveResponse = await leaveEditData(postLeaveData);
           //console.log("Leave Edit Successfully", leaveResponse);
-          alert("Employee and Leave datas updated successfully!")
+          alert("Employee and Leave datas updated successfully!");
         } else {
           // Post leave datas
           const leaveResponse = await leaveDataPost(postLeaveData);
           //console.log("Leave Add Successfully", leaveResponse);
-          alert("Employee and Leave datas updated successfully!")
+          alert("Employee and Leave datas updated successfully!");
         }
       }
     }
@@ -237,18 +236,13 @@ const EditEmpData = () => {
     setImages(event.target.files[0]);
   };
 
-  const handlePrint = useReactToPrint({
-    content: () => printRef.current,
-  })
-
   return (
     <div>
-      <div className="hidden" ref={printRef}>
-        <h1>Hello World</h1>
-      </div>
+      
+
       <div className="flex justify-center">
         <div className="lg:flex lg:justify-around lg:w-full">
-        <div className="flex justify-center justify-items-center mt-3 lg:mt-12 lg:pt-4">
+          <div className="flex justify-center justify-items-center mt-3 lg:mt-12 lg:pt-4">
             <div>
               <h1 className="text-center text-lg mb-3">
                 {image ? image.name : "Choose an image"}
@@ -261,7 +255,7 @@ const EditEmpData = () => {
                     alt=""
                   />
                 ) : (
-                  <img src='../photo/image-upload.png' alt="" />
+                  <img src="../photo/image-upload.png" alt="" />
                 )}
                 <input
                   type="file"
@@ -565,9 +559,7 @@ const EditEmpData = () => {
           >
             Update
           </Button>
-          <Button type="button" onClick={handlePrint} className="btn bg-blue-500 w-20">
-            Print
-          </Button>
+          <EmpDataPrint empData={empData} leaveEntries={leaveEntries} />
           <Link to="/empList">
             <Button className="btn bg-blue-500 w-20">List</Button>
           </Link>
