@@ -1,17 +1,19 @@
 import {
   Button,
+  Checkbox,
   Label,
   Select,
   Table,
   TextInput,
   Textarea,
 } from "flowbite-react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router";
 import { editEmployeeData, searchByEmpId } from "../service/EmpService";
 import { Link } from "react-router-dom";
 import { api } from "../api/ApiResources";
 import { leaveDataPost, leaveEditData } from "../service/LeaveService";
+import { useReactToPrint } from "react-to-print";
 
 const EditEmpData = () => {
   const [empData, setEmpData] = useState({
@@ -32,6 +34,12 @@ const EditEmpData = () => {
   const emp_id = useParams();
   const [leaveData, setLeaveData] = useState([]);
   const [leaveEntries, setLeaveEntries] = useState([]);
+
+  // For Emp image upload
+  const inputRef = useRef(null);
+  const [image, setImages] = useState("");
+
+  const printRef = useRef();
 
   // For Validation
   const [nameError, setNameError] = useState("");
@@ -97,10 +105,12 @@ const EditEmpData = () => {
           //Put Edit Leave Data
           const leaveResponse = await leaveEditData(postLeaveData);
           //console.log("Leave Edit Successfully", leaveResponse);
+          alert("Employee and Leave datas updated successfully!")
         } else {
           // Post leave datas
           const leaveResponse = await leaveDataPost(postLeaveData);
           //console.log("Leave Add Successfully", leaveResponse);
+          alert("Employee and Leave datas updated successfully!")
         }
       }
     }
@@ -219,10 +229,49 @@ const EditEmpData = () => {
     { value: "Earned Leave", text: "Earned Leave" },
   ];
 
+  const handleImageClick = () => {
+    inputRef.current.click();
+  };
+
+  const onImageChange = (event) => {
+    setImages(event.target.files[0]);
+  };
+
+  const handlePrint = useReactToPrint({
+    content: () => printRef.current,
+  })
+
   return (
     <div>
+      <div className="hidden" ref={printRef}>
+        <h1>Hello World</h1>
+      </div>
       <div className="flex justify-center">
         <div className="lg:flex lg:justify-around lg:w-full">
+        <div className="flex justify-center justify-items-center mt-3 lg:mt-12 lg:pt-4">
+            <div>
+              <h1 className="text-center text-lg mb-3">
+                {image ? image.name : "Choose an image"}
+              </h1>
+              <div onClick={handleImageClick} className="cursor-pointer w-56">
+                {image ? (
+                  <img
+                    className="rounded-full"
+                    src={URL.createObjectURL(image)}
+                    alt=""
+                  />
+                ) : (
+                  <img src='../photo/image-upload.png' alt="" />
+                )}
+                <input
+                  type="file"
+                  ref={inputRef}
+                  onChange={onImageChange}
+                  style={{ display: "none" }}
+                />
+              </div>
+            </div>
+          </div>
           <div className="flex max-w-md mt-3 flex-col gap-4">
             <div>
               <div className="mb-2 block">
@@ -378,8 +427,33 @@ const EditEmpData = () => {
                 value={empData.address}
                 onChange={(e) => handle(e)}
                 required
-                rows={3}
+                rows={2}
               />
+            </div>
+            <div>
+              <h1 className="font-bold mb-2">Interest</h1>
+              <div className="grid grid-rows-2 grid-flow-col">
+                <div className="flex items-center gap-2 mb-2">
+                  <Label htmlFor="remember">Reading </Label>
+                  <Checkbox id="remember" />
+                </div>
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="remember">Drawing</Label>
+                  <Checkbox id="remember" />
+                </div>
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="remember">Cooking</Label>
+                  <Checkbox id="remember" />
+                </div>
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="remember">Dancing</Label>
+                  <Checkbox id="remember" />
+                </div>
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="remember">Blogging</Label>
+                  <Checkbox id="remember" />
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -479,7 +553,7 @@ const EditEmpData = () => {
         </div>
       </div>
 
-      <div className="flex justify-center lg:justify-around mt-5">
+      <div className="flex justify-center lg:justify-around mt-5 mb-3">
         <span></span>
         <span></span>
         <span></span>
@@ -490,6 +564,9 @@ const EditEmpData = () => {
             className="btn bg-blue-500 w-20"
           >
             Update
+          </Button>
+          <Button type="button" onClick={handlePrint} className="btn bg-blue-500 w-20">
+            Print
           </Button>
           <Link to="/empList">
             <Button className="btn bg-blue-500 w-20">List</Button>

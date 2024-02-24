@@ -18,7 +18,7 @@
     	</resultMap>
     	
     	<insert id="addEmp" parameterType="EmpModel">
-    		INSERT INTO employee (emp_id, emp_name, nrc, phone, email, dob, rank, department, address, checkdelete) VALUES (#{emp_id}, #{emp_name}, #{nrc}, #{phone}, #{email}, #{dob}, #{rank}, #{dep}, #{address}, #{checkdelete});
+    		INSERT INTO employee (emp_id, emp_name, nrc, phone, email, dob, rank, department, address, checkdelete, image) VALUES (#{emp_id}, #{emp_name}, #{nrc}, #{phone}, #{email}, #{dob}, #{rank}, #{dep}, #{address}, #{checkdelete}, #{image});
     	</insert>
 		
 		<delete id="deleteEmp" parameterType="int">

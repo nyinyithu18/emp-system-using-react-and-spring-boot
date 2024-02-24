@@ -11,6 +11,10 @@ private int emp_id;
 
 @Getter
 @Setter
+private byte[] image;
+
+@Getter
+@Setter
 private String emp_name;
 
 @Getter
@@ -68,4 +72,5 @@ private int days;
 @Getter
 @Setter
 private boolean deleted;
+
 }

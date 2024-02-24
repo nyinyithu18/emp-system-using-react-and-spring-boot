@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Label,
   TextInput,
@@ -6,20 +6,21 @@ import {
   Textarea,
   Button,
   Table,
+  Checkbox,
 } from "flowbite-react";
 import { Link } from "react-router-dom";
 import { api } from "../api/ApiResources";
 import { empDataPost } from "../service/EmpService";
 import { leaveDataPost } from "../service/LeaveService";
+import axios from "axios";
 
 const EmpData = () => {
-
-  // Rank and Department Fetch
+  // For Rank , Department and EmpInterests Fetch
   const [rankData, setRankData] = useState([]);
   const [depData, setDepData] = useState([]);
 
   // For Employee Data Form
-  const [empId, setEmpId] = useState('')
+  const [empId, setEmpId] = useState("");
   const [empName, setEmpName] = useState("");
   const [nrc, setNrc] = useState("");
   const [phone, setPhone] = useState("");
@@ -29,12 +30,16 @@ const EmpData = () => {
   const [dep, setDep] = useState("");
   const [address, setAddress] = useState("");
 
+  // For Emp image upload
+  const inputRef = useRef(null);
+  const [image, setImages] = useState("");
+
   // For Validation
-  const [empIdError, setEmpIDError] = useState('')
+  const [empIdError, setEmpIDError] = useState("");
   const [nameError, setNameError] = useState("");
   const [nrcError, setNrcError] = useState("");
-  const [emailError, setEmailError] = useState("")
-  const [phoneError, setPhoneError] = useState('')
+  const [emailError, setEmailError] = useState("");
+  const [phoneError, setPhoneError] = useState("");
 
   // For Leave Form
   const [leaveEntries, setLeaveEntries] = useState([]);
@@ -54,11 +59,11 @@ const EmpData = () => {
   const handleNameChange = (event) => {
     const { value } = event.target;
     setEmpName(value);
-  if (!value.trim()) {
-    setNameError("EmpName is required");
-  } else {
-    setNameError("");
-  }
+    if (!value.trim()) {
+      setNameError("EmpName is required");
+    } else {
+      setNameError("");
+    }
   };
 
   // Email Validation
@@ -71,7 +76,7 @@ const EmpData = () => {
       setEmailError("Invalid email address");
     } else {
       setEmailError(""); // Clear error if validation passes
-    }   
+    }
   };
 
   // NRC validation
@@ -80,7 +85,11 @@ const EmpData = () => {
     setNrc(value);
     if (!value.trim()) {
       setNrcError("NRC is required");
-    } else if (!/^[0-9]{1,14}\/[a-zA-Z]{2}[a-zA-Z]{2}[a-zA-Z]{2}\([NTRD]\)[0-9]{6}$/.test(value)) {
+    } else if (
+      !/^[0-9]{1,14}\/[a-zA-Z]{2}[a-zA-Z]{2}[a-zA-Z]{2}\([NTRD]\)[0-9]{6}$/.test(
+        value
+      )
+    ) {
       setNrcError("Invalid NRC format");
     } else {
       setNrcError(""); // Clear error if validation passes
@@ -102,7 +111,6 @@ const EmpData = () => {
 
   // Emp Data and Leave Data Post
   const EmpDataPost = async () => {
-
     if (!empId || !empName || !nrc || !phone || !email) {
       // If any required field is empty, set error messages
       setEmpIDError(!empId ? "EmpId is required" : "");
@@ -113,8 +121,52 @@ const EmpData = () => {
       return; // Stop submission if validation fails
     }
 
-     {
+    {
+      /*
+      formData.append('emp_id', empId);
+      formData.append('emp_name', empName);
+      formData.append('nrc', nrc);
+      formData.append('phone',phone);
+      formData.append('email',email);
+      formData.append('dob',dob);
+      formData.append('rank',rankData);
+      formData.append('dep',dep);
+      formData.append('address',address);
+      formData.append('checkdelete', false);
+      formData.append('image',image);
+*/
+      const formData = new FormData();
+      formData.append(
+        "empData",
+        JSON.stringify({
+          emp_id: empId,
+          emp_name: empName,
+          nrc: nrc,
+          phone: phone,
+          email: email,
+          dob: dob,
+          rank: rankdata,
+          dep: dep,
+          address: address,
+          checkdelete: false,
+        })
+      );
+      formData.append("image", image);
+      try {
+        await axios.post("http://localhost:8080/addEmp", formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        alert("Employee Data saved successfully");
+      } catch (error) {
+        console.error("Error", error);
+      }
+      console.log(formData);
+
+      /*
       const postEmpData = {
+        image: image,
         emp_id: empId,
         emp_name: empName,
         nrc: nrc,
@@ -126,26 +178,36 @@ const EmpData = () => {
         address: address,
         checkdelete: false,
       };
+*/
+      //console.log(postEmpData);
+      /*
+      try {
+        // post emp data
+        const empResponse = await empDataPost(formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        console.log("emp successfully", empResponse);
+      } catch (error) {
+        console.log("Error posting emp data: ", error);
+      }
 
-      // post emp data
-      const empResponse = await empDataPost(postEmpData);
-      //console.log("emp successfully",empResponse);
-      
-      for(const entry of leaveEntries){
+      for (const entry of leaveEntries) {
         const postLeaveData = {
           emp_id: empId,
           leave_type: entry.leave_type,
           from_date: entry.from_date,
           to_date: entry.to_date,
           days: entry.days,
-        }   
+        };
 
-      // post leave data
-      const leaveResponse = await leaveDataPost(postLeaveData);
-      //console.log("leave successfully",leaveResponse);
+        // post leave data
+        const leaveResponse = await leaveDataPost(postLeaveData);
+        //console.log("leave successfully",leaveResponse);
       }
 
-      setEmpId('')
+      setEmpId("");
       setEmpName("");
       setNrc("");
       setPhone("");
@@ -154,8 +216,11 @@ const EmpData = () => {
       setRank("");
       setDep("");
       setAddress("");
-      setLeaveEntries([{ emp_id: '', leave_type: "", from_date: "", to_date: "", days: "" }]);
-     }
+      setImages("");
+      setLeaveEntries([
+        { emp_id: "", leave_type: "", from_date: "", to_date: "", days: "" },
+      ]); */
+    }
   };
 
   // Fetch Rank and Department
@@ -166,8 +231,8 @@ const EmpData = () => {
 
       const depResponse = await api.get("/depList");
       setDepData(depResponse.data);
-    }
-      fetchData();
+    };
+    fetchData();
   }, []);
 
   // Handle Leave Input
@@ -240,10 +305,44 @@ const EmpData = () => {
     { value: "Earned Leave", text: "Earned Leave" },
   ];
 
+  const handleImageClick = () => {
+    inputRef.current.click();
+  };
+
+  const onImageChange = (event) => {
+    setImages(event.target.files[0]);
+  };
+
   return (
     <>
       <div className="flex justify-center">
         <div className="lg:flex lg:justify-around lg:w-full">
+          <div className="flex justify-center justify-items-center mt-3 lg:mt-12 lg:pt-4">
+            <div>
+              <h1 className="text-center text-lg mb-3">
+                {image ? image.name : "Choose an image"}
+              </h1>
+              <div onClick={handleImageClick} className="cursor-pointer w-56">
+                {image ? (
+                  <img
+                    className="rounded-full"
+                    src={URL.createObjectURL(image)}
+                    alt=""
+                  />
+                ) : (
+                  <img src="./photo/image-upload.png" alt="" />
+                )}
+                <input
+                  type="file"
+                  ref={inputRef}
+                  onChange={onImageChange}
+                  style={{ display: "none" }}
+                />
+              </div>
+              <div className="flex justify-center"></div>
+            </div>
+          </div>
+
           <div className="flex max-w-md mt-3 flex-col gap-4">
             <div>
               <div className="mb-2 block">
@@ -401,7 +500,7 @@ const EmpData = () => {
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
                 required
-                rows={3}
+                rows={2}
               />
             </div>
           </div>
@@ -421,7 +520,7 @@ const EmpData = () => {
         <div className="lg:mx-8">
           <Table hoverable>
             <Table.Head>
-            <Table.HeadCell>No.</Table.HeadCell>
+              <Table.HeadCell>No.</Table.HeadCell>
               <Table.HeadCell>Leave Type</Table.HeadCell>
               <Table.HeadCell>From Date</Table.HeadCell>
               <Table.HeadCell>To Date</Table.HeadCell>
@@ -442,9 +541,7 @@ const EmpData = () => {
                   key={index}
                   className="bg-white dark:border-gray-700 dark:bg-gray-800"
                 >
-                  <Table.Cell>
-                    {index + 1}
-                  </Table.Cell>
+                  <Table.Cell>{index + 1}</Table.Cell>
                   <Table.Cell>
                     <Select
                       id={`leave_type_${index}`}
@@ -502,25 +599,24 @@ const EmpData = () => {
             </Table.Body>
           </Table>
         </div>
+      </div>
+      <div className="mt-3 mb-3 flex justify-around">
+        <span></span>
+        <span></span>
+        <span></span>
+        <div className="flex flex-row gap-4">
+          <Button
+            type="button"
+            onClick={() => EmpDataPost()}
+            className="btn bg-blue-500 w-20"
+          >
+            Save
+          </Button>
+          <Link to="/empList">
+            <Button className="btn bg-blue-500 w-20">List</Button>
+          </Link>
         </div>
-        <div className="mt-3 mb-3 flex justify-around">
-          <span></span>
-          <span></span>
-          <span></span>
-          <div className="flex flex-row gap-4">
-            <Button
-              type="button"
-              onClick={() => EmpDataPost()}
-              className="btn bg-blue-500 w-20"
-            >
-              Save
-            </Button>
-            <Link to="/empList">
-              <Button className="btn bg-blue-500 w-20">List</Button>
-            </Link>
-          </div>
-        </div>
-      
+      </div>
     </>
   );
 };
