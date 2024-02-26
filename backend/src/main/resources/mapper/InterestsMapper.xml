@@ -1,0 +1,15 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+    <mapper namespace="com.backend.backend.repository.InterestsRepository">
+		<resultMap id="InterestResultMap" type="EmpModel">
+    		<id column="interest_id" property="interest_id" />
+    		<result column="interest_name" property="interest_name" />
+    	</resultMap>
+    			
+		<select id="interestList" resultMap="InterestResultMap">
+    		SELECT interest_id, interest_name FROM interests;
+    	</select>
+    	
+	</mapper>

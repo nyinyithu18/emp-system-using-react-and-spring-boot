@@ -1,0 +1,31 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+	<mapper namespace="com.backend.backend.repository.EmpInterestRepository">
+		<resultMap id="EmpInterestResultMap" type="EmpModel">
+    		<id column="empinterest_id" property="empinterest_id" />
+    		<result column="emp_id" property="emp_id" />
+    		<result column="emp_name" property="emp_name" />
+    		<result column="nrc" property="nrc" />
+    		<result column="phone" property="phone" />
+    		<result column="email" property="email" />
+    		<result column="dob" property="dob" />
+    		<result column="rank" property="rank" />
+    		<result column="department" property="dep" />
+    		<result column="address" property="address" />
+    		<result column="checkdelete" property="checkdelete" />
+			<result column="image" property="image" /> 
+			<result column="interest_id" property="interest_id" />
+			<result column="interest_name" property="interest_name" />   	
+    	</resultMap>
+		
+		
+		<insert id="addEmpInterest" parameterType="EmpModel">
+			INSERT INTO empinterests (emp_id, interest_id) VALUES (#{emp_id}, #{interest_id});
+		</insert>
+		
+		<select id="empInterestList" resultMap="EmpInterestResultMap" parameterType="int">
+			SELECT empinterests.empinterest_id, employee.emp_id, employee.emp_name, employee.nrc, employee.phone, employee.email, employee.dob, employee.rank, employee.department, employee.address, employee.checkdelete , interests.interest_id, interests.interest_name FROM empinterests INNER JOIN employee ON employee.emp_id = empinterests.emp_id INNER JOIN interests ON empinterests.interest_id = interests.interest_id;		
+		</select>
+	</mapper>
