@@ -5,7 +5,7 @@
     <mapper namespace="com.backend.backend.repository.LeaveRepository">
 		<resultMap id="LeaveResultMap" type="EmpModel">
     		<id column="leave_id" property="leave_id" />
-    		<id column="emp_id" property="emp_id" />
+    		<result column="emp_id" property="emp_id" />
     		<result column="emp_name" property="emp_name" />
     		<result column="nrc" property="nrc" />
     		<result column="phone" property="phone" />
@@ -15,6 +15,7 @@
     		<result column="department" property="dep" />
     		<result column="address" property="address" />
     		<result column="checkdelete" property="checkdelete" />
+    		<result column="image" property="image" />
     		<result column="leave_type" property="leave_type" />
     		<result column="from_date" property="from_date" />
     		<result column="to_date" property="to_date" />
@@ -27,7 +28,7 @@
 		</insert>
 		
 		<insert id="addEmployee" parameterType="EmpModel">
-			INSERT INTO employee (emp_id, emp_name, nrc, phone, email, dob, rank, department, address, checkdelete) VALUES (#{emp_id}, #{emp_name}, #{nrc}, #{phone}, #{email}, #{dob}, #{rank}, #{dep}, #{address}, #{checkdelete});
+			INSERT INTO employee (emp_id, emp_name, nrc, phone, email, dob, rank, department, address, checkdelete, image) VALUES (#{emp_id}, #{emp_name}, #{nrc}, #{phone}, #{email}, #{dob}, #{rank}, #{dep}, #{address}, #{checkdelete}, #{image});
 		</insert>
 		
 		<delete id="deleteLeave" parameterType="int">
@@ -43,7 +44,7 @@
     	</select>
     	
     	<select id="empLeaveList" resultMap="LeaveResultMap">
-			SELECT employee.emp_id, employee.emp_name, employee.nrc, employee.phone, employee.email, employee.dob, employee.rank, employee.department, employee.address, employee.checkdelete , empleave.leave_type, empleave.leave_id, empleave.from_date, empleave.to_date, empleave.days, empleave.deleted FROM employee FULL OUTER JOIN empleave ON employee.emp_id = empleave.emp_id ORDER BY employee.emp_id;  
+			SELECT employee.emp_id, employee.emp_name, employee.nrc, employee.phone, employee.email, employee.dob, employee.rank, employee.department, employee.address, employee.checkdelete , employee.image , empleave.leave_type, empleave.leave_id, empleave.from_date, empleave.to_date, empleave.days, empleave.deleted FROM employee FULL OUTER JOIN empleave ON employee.emp_id = empleave.emp_id ORDER BY employee.emp_id;  
 		</select>
 
     	<update id="editLeave" parameterType="EmpModel">

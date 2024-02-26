@@ -4,6 +4,10 @@ export const empDataPost = (empData) =>{
     return api.post("/addEmp", empData);
 }
 
+export const empInterestsDataPost = (interestData) =>{
+    return api.post("/addEmpInterests", interestData);
+}
+
 export const searchByEmpId = (emp_id) => {
     return api.get(`/searchEmpId?emp_id=${emp_id}`)
 }

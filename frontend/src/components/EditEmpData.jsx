@@ -25,20 +25,24 @@ const EditEmpData = () => {
     email: "",
     dob: "",
     address: "",
+    image: ""
   });
+  const emp_id = useParams();
 
   const [rank, setRank] = useState("");
   const [dep, setDep] = useState("");
 
   const [rankData, setRankData] = useState([]);
   const [depData, setDepData] = useState([]);
-  const emp_id = useParams();
+ 
   const [leaveData, setLeaveData] = useState([]);
   const [leaveEntries, setLeaveEntries] = useState([]);
 
   // For Emp image upload
   const inputRef = useRef(null);
   const [image, setImages] = useState("");
+
+  const [interests, setInterests] = useState([])
 
   // For Validation
   const [nameError, setNameError] = useState("");
@@ -86,8 +90,16 @@ const EditEmpData = () => {
       address: empData.address,
     };
 
+    const formData = new FormData();
+    formData.append('empData', JSON.stringify(empEditData));
+    formData.append('image', image ? image : empData.image);
+
     // Put Emp Data
-    const empEditResponse = await editEmployeeData(empEditData);
+    const empEditResponse = await editEmployeeData(formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
     //console.log("Employee Edit Successfully", empEditResponse);
 
     for (const entry of leaveEntries) {
@@ -118,6 +130,7 @@ const EditEmpData = () => {
     setPhoneError("");
     setEmailError("");
   };
+  console.log(interests);
 
   // Fetch Request Data For Rank, Department, Leave, SearchByEmpId
   useEffect(() => {
@@ -127,6 +140,9 @@ const EditEmpData = () => {
 
       const depResponse = await api.get("/depList");
       setDepData(depResponse.data);
+
+      const interests = await api.get('/interestList');
+      setInterests(interests.data);
 
       const emp = await searchByEmpId(emp_id.emp_id);
       setEmpData(emp.data);
@@ -236,22 +252,23 @@ const EditEmpData = () => {
     setImages(event.target.files[0]);
   };
 
+  const [check, setCheck] = useState(false)
+
+  const handleInterestEditChange = () => {
+
+  }
+
   return (
     <div>
-      
-
       <div className="flex justify-center">
         <div className="lg:flex lg:justify-around lg:w-full">
           <div className="flex justify-center justify-items-center mt-3 lg:mt-12 lg:pt-4">
             <div>
-              <h1 className="text-center text-lg mb-3">
-                {image ? image.name : "Choose an image"}
-              </h1>
               <div onClick={handleImageClick} className="cursor-pointer w-56">
-                {image ? (
+                {empData.image ? (
                   <img
                     className="rounded-full"
-                    src={URL.createObjectURL(image)}
+                    src={image ? URL.createObjectURL(image)  : `data:image/jpeg;base64,${empData.image}`}
                     alt=""
                   />
                 ) : (
@@ -424,29 +441,33 @@ const EditEmpData = () => {
                 rows={2}
               />
             </div>
-            <div>
-              <h1 className="font-bold mb-2">Interest</h1>
+            <div className="max-w-md">
+              <div className="mb-2 mt-2 block">
+                <Label
+                  className="font-medium text-lg"
+                  htmlFor="interests"
+                  value="Interests"
+                />
+              </div>
               <div className="grid grid-rows-2 grid-flow-col">
-                <div className="flex items-center gap-2 mb-2">
-                  <Label htmlFor="remember">Reading </Label>
-                  <Checkbox id="remember" />
-                </div>
-                <div className="flex items-center gap-2">
-                  <Label htmlFor="remember">Drawing</Label>
-                  <Checkbox id="remember" />
-                </div>
-                <div className="flex items-center gap-2">
-                  <Label htmlFor="remember">Cooking</Label>
-                  <Checkbox id="remember" />
-                </div>
-                <div className="flex items-center gap-2">
-                  <Label htmlFor="remember">Dancing</Label>
-                  <Checkbox id="remember" />
-                </div>
-                <div className="flex items-center gap-2">
-                  <Label htmlFor="remember">Blogging</Label>
-                  <Checkbox id="remember" />
-                </div>
+                {interests.map((interest) => (
+                  <div
+                    key={interest.interest_id}
+                    className="flex items-center gap-2 mb-2"
+                  >
+                    <Label
+                      htmlFor={`interest_${interest.interest_id}`}
+                      value={interest.interest_name}
+                    />
+                    <Checkbox
+                    typeof="checkbox"
+                      id={`interest_${interest.interest_id}`}
+                      name={`interest_${interest.interest_id}`}
+                      value={interest.interest_id}           
+                      onChange={handleInterestEditChange}
+                    />
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -559,7 +580,7 @@ const EditEmpData = () => {
           >
             Update
           </Button>
-          <EmpDataPrint empData={empData} leaveEntries={leaveEntries} />
+          <EmpDataPrint empData={empData} />
           <Link to="/empList">
             <Button className="btn bg-blue-500 w-20">List</Button>
           </Link>

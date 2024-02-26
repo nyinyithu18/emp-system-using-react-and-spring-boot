@@ -1,7 +1,7 @@
 package com.backend.backend.controller;
 
 import java.io.IOException;
-import java.util.List; 
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -30,15 +30,39 @@ public class EmpController {
 	
 	@PostMapping(value = "/addEmp", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public int addEmp(@RequestPart("empData") EmpModel empModel, @RequestParam("image") MultipartFile imageFile){
-		
-		try {
-			empModel.setImage(imageFile.getBytes());
-		}catch (IOException e) {
-			e.printStackTrace();
-		}
-		return empServiceImpl.addEmp(empModel);
-	}
+	public int addEmp(@RequestParam("emp_id") int empId,
+            @RequestParam("emp_name") String empName,
+            @RequestParam("nrc") String nrc,
+            @RequestParam("phone") String phone,
+            @RequestParam("email") String email,
+            @RequestParam("dob") String dob,
+            @RequestParam("rank") String rank,
+            @RequestParam("dep") String dep,
+            @RequestParam("address") String address,
+            @RequestParam("checkdelete") boolean checkdelete,
+            @RequestPart("image") MultipartFile imageFile) {
+
+			EmpModel empModel = new EmpModel();
+			empModel.setEmp_id(empId);
+			empModel.setEmp_name(empName);
+			empModel.setNrc(nrc);
+			empModel.setPhone(phone);
+			empModel.setEmail(email);
+			empModel.setDob(dob);
+			empModel.setRank(rank);
+			empModel.setDep(dep);
+			empModel.setAddress(address);
+			empModel.setCheckdelete(checkdelete);
+
+try {
+	byte[] imageBytes = imageFile.getBytes();
+    empModel.setImage(imageBytes);
+} catch (IOException e) {
+  e.printStackTrace();
+}
+
+return empServiceImpl.addEmp(empModel);
+}
 	
 	@DeleteMapping(value = "/deleteEmp/{emp_id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
@@ -50,7 +74,7 @@ public class EmpController {
 	
 	@GetMapping(value = "/empList", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public List<EmpModel> empList() {
+	public List<EmpModel> empList() {			
 		return empServiceImpl.empList();
 	}
 	

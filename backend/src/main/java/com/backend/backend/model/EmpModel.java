@@ -1,5 +1,7 @@
 package com.backend.backend.model;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,6 +14,10 @@ private int emp_id;
 @Getter
 @Setter
 private byte[] image;
+
+@Getter
+@Setter
+private MultipartFile imageFiles;
 
 @Getter
 @Setter
@@ -72,5 +78,17 @@ private int days;
 @Getter
 @Setter
 private boolean deleted;
+
+@Getter
+@Setter
+private int interest_id;
+
+@Getter
+@Setter
+private String interest_name;
+
+@Getter
+@Setter
+private int empinterest_id;
 
 }

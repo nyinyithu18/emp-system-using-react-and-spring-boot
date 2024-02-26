@@ -15,7 +15,7 @@ const App = () => {
         <Route path="/empList" element={<EmpList/>} />
         <Route path="/importExcelFile" element={<EmpList/>} />
         <Route path="/editEmpData/:emp_id" element={<EditEmpData />} />
-        <Route path="/reportEmpDatas" element={<EditEmpData/>} />   
+        <Route path="/reportEmpDatas/:emp_id" element={<EditEmpData/>} />   
         <Route path="*" element={<PageNotFound/>} />
       </Routes>
     </>

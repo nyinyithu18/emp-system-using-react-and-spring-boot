@@ -15,6 +15,7 @@
     		<result column="department" property="dep" />
     		<result column="address" property="address" />
     		<result column="checkdelete" property="checkdelete" />
+			<result column="image" property="image" />    	
     	</resultMap>
     	
     	<insert id="addEmp" parameterType="EmpModel">
@@ -26,14 +27,14 @@
 		</delete>
 		
 		<select id="empList" resultMap="EmpResultMap">
-    		SELECT emp_id, emp_name, nrc, phone, email, dob, rank, department, address, checkdelete FROM employee;
+    		SELECT emp_id, emp_name, nrc, phone, email, dob, rank, department, address, checkdelete, image FROM employee;
     	</select>
     	
     	<select id="searchById" resultMap="EmpResultMap" parameterType="int">
-    		SELECT emp_id, emp_name, nrc, phone, email, dob, rank, department, address FROM employee WHERE emp_id = #{emp_id};
+    		SELECT emp_id, emp_name, nrc, phone, email, dob, rank, department, address, image FROM employee WHERE emp_id = #{emp_id};
     	</select>
     	
     	<update id="editEmp" parameterType="EmpModel">
-			UPDATE employee SET emp_name = #{emp_name}, nrc=#{nrc}, phone=#{phone}, email=#{email}, dob=#{dob}, rank=#{rank}, department=#{dep}, checkdelete=#{checkdelete}, address=#{address} WHERE emp_id=#{emp_id}; 
+			UPDATE employee SET emp_name = #{emp_name}, nrc=#{nrc}, phone=#{phone}, email=#{email}, dob=#{dob}, rank=#{rank}, department=#{dep}, checkdelete=#{checkdelete}, address=#{address}, image=#{image} WHERE emp_id=#{emp_id}; 
 		</update>
 	</mapper>
