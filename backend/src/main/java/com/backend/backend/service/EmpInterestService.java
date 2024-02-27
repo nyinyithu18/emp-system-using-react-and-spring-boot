@@ -8,4 +8,5 @@ public interface EmpInterestService {
 
 	public int addEmpInterest(EmpModel empModel);
 	public List<EmpModel> empInterestList();
+	public int editEmpInterest(EmpModel empModel);
 }

@@ -91,4 +91,8 @@ private String interest_name;
 @Setter
 private int empinterest_id;
 
+@Getter
+@Setter
+private boolean interest_checked;
+
 }

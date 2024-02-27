@@ -11,4 +11,5 @@ public interface EmpService {
 	public List<EmpModel> empList();
 	public EmpModel searchById(int emp_id);
 	public int editEmp(EmpModel empModel);
+	public int editEmpImage(EmpModel empModel);
 }

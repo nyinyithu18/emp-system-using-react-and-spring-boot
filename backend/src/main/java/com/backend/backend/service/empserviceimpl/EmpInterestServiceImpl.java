@@ -25,4 +25,9 @@ public class EmpInterestServiceImpl implements EmpInterestService{
 		return empInterestRepo.empInterestList();
 	}
 
+	@Override
+	public int editEmpInterest(EmpModel empModel) {
+		return empInterestRepo.editEmpInterest(empModel);
+	}
+
 }

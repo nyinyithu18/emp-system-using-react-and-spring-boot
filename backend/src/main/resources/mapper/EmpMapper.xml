@@ -35,6 +35,10 @@
     	</select>
     	
     	<update id="editEmp" parameterType="EmpModel">
+			UPDATE employee SET emp_name = #{emp_name}, nrc=#{nrc}, phone=#{phone}, email=#{email}, dob=#{dob}, rank=#{rank}, department=#{dep}, checkdelete=#{checkdelete}, address=#{address} WHERE emp_id=#{emp_id}; 
+		</update>
+		
+		<update id="editEmpImage" parameterType="EmpModel">
 			UPDATE employee SET emp_name = #{emp_name}, nrc=#{nrc}, phone=#{phone}, email=#{email}, dob=#{dob}, rank=#{rank}, department=#{dep}, checkdelete=#{checkdelete}, address=#{address}, image=#{image} WHERE emp_id=#{emp_id}; 
 		</update>
 	</mapper>
