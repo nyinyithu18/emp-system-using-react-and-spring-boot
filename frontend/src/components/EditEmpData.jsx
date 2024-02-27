@@ -9,12 +9,17 @@ import {
 } from "flowbite-react";
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router";
-import { editEmployeeData, searchByEmpId } from "../service/EmpService";
+import {
+  editEmpInterestsData,
+  empInterestsDataPost,
+  searchByEmpId,
+} from "../service/EmpService";
 import { Link } from "react-router-dom";
 import { api } from "../api/ApiResources";
 import { leaveDataPost, leaveEditData } from "../service/LeaveService";
 import { useReactToPrint } from "react-to-print";
 import EmpDataPrint from "./EmpDataPrint";
+import axios from "axios";
 
 const EditEmpData = () => {
   const [empData, setEmpData] = useState({
@@ -25,7 +30,7 @@ const EditEmpData = () => {
     email: "",
     dob: "",
     address: "",
-    image: ""
+    image: "",
   });
   const emp_id = useParams();
 
@@ -34,7 +39,7 @@ const EditEmpData = () => {
 
   const [rankData, setRankData] = useState([]);
   const [depData, setDepData] = useState([]);
- 
+
   const [leaveData, setLeaveData] = useState([]);
   const [leaveEntries, setLeaveEntries] = useState([]);
 
@@ -42,7 +47,9 @@ const EditEmpData = () => {
   const inputRef = useRef(null);
   const [image, setImages] = useState("");
 
-  const [interests, setInterests] = useState([])
+  const [interests, setInterests] = useState([]);
+  const [empInterestList, setEmpInterestList] = useState([]);
+  const [selectedInterests, setSelectedInterests] = useState([]);
 
   // For Validation
   const [nameError, setNameError] = useState("");
@@ -77,7 +84,7 @@ const EditEmpData = () => {
       setEmailError("Email is required");
       return;
     }
-
+    /*
     const empEditData = {
       emp_id: emp_id.emp_id,
       emp_name: empData.emp_name,
@@ -87,20 +94,40 @@ const EditEmpData = () => {
       dob: empData.dob,
       rank: rank,
       dep: dep,
-      address: empData.address,
+      address: empData.address, 
     };
+    */
 
     const formData = new FormData();
-    formData.append('empData', JSON.stringify(empEditData));
-    formData.append('image', image ? image : empData.image);
+    formData.append("emp_id", emp_id.emp_id);
+    formData.append("emp_name", empData.emp_name);
+    formData.append("nrc", empData.nrc);
+    formData.append("phone", empData.phone);
+    formData.append("email", empData.email);
+    formData.append("dob", empData.dob);
+    formData.append("rank", rank);
+    formData.append("dep", dep);
+    formData.append("address", empData.address);
+    formData.append("checkdelete", empData.checkdelete);
+    formData.append("image", image ? image : empData.image); // Include updated image or existing image
 
     // Put Emp Data
-    const empEditResponse = await editEmployeeData(formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    });
-    //console.log("Employee Edit Successfully", empEditResponse);
+    try {
+      // post emp data
+      const response = await axios.put(
+        "http://localhost:8080/editEmpImage",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      console.log("Response:", response);
+      alert("Employee Data saved successfully");
+    } catch (error) {
+      console.log("Error posting emp data: ", error);
+    }
 
     for (const entry of leaveEntries) {
       if (!entry.deleted) {
@@ -116,21 +143,70 @@ const EditEmpData = () => {
           //Put Edit Leave Data
           const leaveResponse = await leaveEditData(postLeaveData);
           //console.log("Leave Edit Successfully", leaveResponse);
-          alert("Employee and Leave datas updated successfully!");
+          //alert("Employee and Leave datas updated successfully!");
         } else {
           // Post leave datas
           const leaveResponse = await leaveDataPost(postLeaveData);
           //console.log("Leave Add Successfully", leaveResponse);
-          alert("Employee and Leave datas updated successfully!");
+          //alert("Employee and Leave datas updated successfully!");
         }
       }
     }
+
+    for (const interestId of selectedInterests) {
+      if (interestId !== undefined) {
+        const existingInterest = empInterestList.find(
+          (empinterest) =>
+            empinterest.emp_id == emp_id.emp_id &&
+            empinterest.interest_id == interestId
+        );
+
+        if (existingInterest) {
+          if (
+            existingInterest.emp_id == emp_id.emp_id &&
+            existingInterest.interest_id == interestId
+          ) {
+            const editEmpInterestData = {
+              empinterest_id: existingInterest.empinterest_id,
+              emp_id: emp_id.emp_id,
+              interest_id: existingInterest.interest_id,
+              interest_checked: !existingInterest.interest_checked,
+            };
+            EditEmpInterests(editEmpInterestData);
+          } else {
+            const editEmpInterestData = {
+              empinterest_id: existingInterest.empinterest_id,
+              emp_id: emp_id.emp_id,
+              interest_id: existingInterest.interest_id,
+              interest_checked: !existingInterest.interest_checked,
+            };
+            EditEmpInterests(editEmpInterestData);
+          }
+
+          //console.log("Edit interest:", editEmpInterestData);
+        } else {
+          const editEmpInterestData = {
+            emp_id: emp_id.emp_id,
+            interest_id: interestId,
+          };
+          const addInterestRes = await empInterestsDataPost(
+            editEmpInterestData
+          );
+          //console.log("Add interest:", addInterestRes);
+        }
+      }
+    }
+
     setNameError("");
     setNrcError("");
     setPhoneError("");
     setEmailError("");
   };
-  console.log(interests);
+
+  const EditEmpInterests = async (interestsData) => {
+    const editEmpInterestData = await editEmpInterestsData(interestsData);
+    //console.log("edit interest:", editEmpInterestData);
+  };
 
   // Fetch Request Data For Rank, Department, Leave, SearchByEmpId
   useEffect(() => {
@@ -141,8 +217,11 @@ const EditEmpData = () => {
       const depResponse = await api.get("/depList");
       setDepData(depResponse.data);
 
-      const interests = await api.get('/interestList');
+      const interests = await api.get("/interestList");
       setInterests(interests.data);
+
+      const empInterests = await api.get("/empInterestList");
+      setEmpInterestList(empInterests.data);
 
       const emp = await searchByEmpId(emp_id.emp_id);
       setEmpData(emp.data);
@@ -154,12 +233,27 @@ const EditEmpData = () => {
     fetchData();
   }, [count]);
 
+  // Filter Leave Relevant With Employee
   useEffect(() => {
     const relevantLeaveEntries = leaveData.filter(
       (leave) => leave.emp_id == emp_id.emp_id && leave.deleted == false
     );
     setLeaveEntries(relevantLeaveEntries);
   }, [leaveData, emp_id]);
+
+  // Filter Interests Relevant With Employee
+  useEffect(() => {
+    const relevantEmpInterests = empInterestList.filter(
+      (empinterest) => empinterest.emp_id == emp_id.emp_id
+    );
+
+    const selectedEmpInterests = relevantEmpInterests.map((empinterest) => {
+      if (empinterest.interest_checked === false) {
+        return empinterest.interest_id;
+      }
+    });
+    setSelectedInterests(selectedEmpInterests);
+  }, [empInterestList, emp_id]);
 
   // Add Leave Form
   const handleAddEntry = () => {
@@ -251,12 +345,18 @@ const EditEmpData = () => {
   const onImageChange = (event) => {
     setImages(event.target.files[0]);
   };
+  console.log(image);
+  //console.log(selectedInterests);
+  const handleInterestEditChange = (event) => {
+    const interestId = parseInt(event.target.value);
+    const isChecked = event.target.checked;
 
-  const [check, setCheck] = useState(false)
-
-  const handleInterestEditChange = () => {
-
-  }
+    if (isChecked) {
+      setSelectedInterests([...selectedInterests, interestId]);
+    } else {
+      setSelectedInterests(selectedInterests.filter((id) => id !== interestId));
+    }
+  };
 
   return (
     <div>
@@ -265,10 +365,14 @@ const EditEmpData = () => {
           <div className="flex justify-center justify-items-center mt-3 lg:mt-12 lg:pt-4">
             <div>
               <div onClick={handleImageClick} className="cursor-pointer w-56">
-                {empData.image ? (
+                {empData.image || image ? (
                   <img
                     className="rounded-full"
-                    src={image ? URL.createObjectURL(image)  : `data:image/jpeg;base64,${empData.image}`}
+                    src={
+                      image
+                        ? URL.createObjectURL(image)
+                        : `data:image/jpeg;base64,${empData.image}`
+                    }
                     alt=""
                   />
                 ) : (
@@ -460,10 +564,11 @@ const EditEmpData = () => {
                       value={interest.interest_name}
                     />
                     <Checkbox
-                    typeof="checkbox"
+                      typeof="checkbox"
                       id={`interest_${interest.interest_id}`}
                       name={`interest_${interest.interest_id}`}
-                      value={interest.interest_id}           
+                      value={interest.interest_id}
+                      checked={selectedInterests.includes(interest.interest_id)}
                       onChange={handleInterestEditChange}
                     />
                   </div>

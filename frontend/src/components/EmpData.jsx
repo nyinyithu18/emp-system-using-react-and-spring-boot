@@ -239,7 +239,7 @@ const EmpData = () => {
 
         // post interests data
         const interestRes = await empInterestsDataPost(postEmpInterest);
-        console.log("Interests Data Successfully", interestRes);
+        //console.log("Interests Data Successfully", interestRes);
         //console.log(postEmpInterest);
       }
 

@@ -1,6 +1,6 @@
-import { Button, Modal, Table } from "flowbite-react";
+import { Button, Checkbox, Label, Modal, Table } from "flowbite-react";
 import React, { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
 import { api } from "../api/ApiResources";
 
@@ -11,11 +11,17 @@ const EmpDataPrint = ({ empData }) => {
   const [leaveData, setLeaveData] = useState([]);
   const [leaveEntries, setLeaveEntries] = useState([]);
   const [image, setImages] = useState("");
+  const [empInterestList, setEmpInterestList] = useState([]);
+  const [selectedInterests, setSelectedInterests] = useState([]);
+  const emp_id = useParams();
 
   useEffect(() => {
     const fetchData = async () => {
       const leaveList = await api.get("/leaveList");
       setLeaveData(leaveList.data);
+
+      const empInterests = await api.get("/empInterestList");
+      setEmpInterestList(empInterests.data);
     };
 
     const relevantLeaveEntries = leaveData.filter(
@@ -29,6 +35,21 @@ const EmpDataPrint = ({ empData }) => {
   const handlePrint = useReactToPrint({
     content: () => printRef.current,
   });
+
+  // Filter Interests Relevant With Employee
+  useEffect(() => {
+    const relevantEmpInterests = empInterestList.filter(
+      (empinterest) => empinterest.emp_id == emp_id.emp_id
+    );
+    
+    const selectedEmpInterests = relevantEmpInterests.map((empinterest) => {
+      if (empinterest.interest_checked === false) {
+        return empinterest.interest_name;
+      }
+    });
+    setSelectedInterests(selectedEmpInterests);
+  }, [empInterestList, emp_id]);
+
   return (
     <div>
       <Link to={`/reportEmpDatas/${empData.emp_id}`}>
@@ -106,6 +127,30 @@ const EmpDataPrint = ({ empData }) => {
                     Address{" "}
                     <span className="ms-11">{`>> ${empData.address}`}</span>
                   </h1>
+                </div>
+                <div className="max-w-md">
+                  <div className="mb-2 mt-6 block">
+                    <Label
+                      className="font-medium text-lg"
+                      htmlFor="interests"
+                      value="Interests"
+                    />
+                  </div>
+                  <div className="">
+                    {selectedInterests.length > 0 ? (
+                      selectedInterests.map((interest, index) => {
+                        if (interest !== undefined) {
+                          return (
+                            <div key={index}>
+                              {index + 1}. {interest}
+                            </div>
+                          );
+                        }
+                      })
+                    ) : (
+                      <div>No Interests</div>
+                    )}
+                  </div>
                 </div>
               </div>
               <div className="w-40 mt-5">
