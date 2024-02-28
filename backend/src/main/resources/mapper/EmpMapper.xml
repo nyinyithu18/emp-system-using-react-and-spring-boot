@@ -27,7 +27,7 @@
 		</delete>
 		
 		<select id="empList" resultMap="EmpResultMap">
-    		SELECT emp_id, emp_name, nrc, phone, email, dob, rank, department, address, checkdelete, image FROM employee;
+    		SELECT emp_id, emp_name, nrc, phone, email, dob, rank, department, address, checkdelete, image FROM employee ORDER BY emp_id ASC;
     	</select>
     	
     	<select id="searchById" resultMap="EmpResultMap" parameterType="int">

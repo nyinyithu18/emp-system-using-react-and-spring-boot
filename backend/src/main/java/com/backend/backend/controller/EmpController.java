@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -123,7 +124,26 @@ return empServiceImpl.addEmp(empModel);
 	    } catch (IOException e) {
 	        e.printStackTrace();
 	    }
-	    
 		return empServiceImpl.editEmpImage(empModel);
 	}
+	
+	 @GetMapping(value = "/printEmpList", produces = MediaType.TEXT_PLAIN_VALUE)
+	    @ResponseBody
+	    public ResponseEntity<String> printEmpList() {
+	        List<EmpModel> empList = empServiceImpl.empList();
+	        StringBuilder textContent = new StringBuilder();
+	        for (EmpModel emp : empList) {
+	            textContent.append("ID: ").append(emp.getEmp_id()).append(", ");
+	            textContent.append("Name: ").append(emp.getEmp_name()).append(", ");
+	            textContent.append("NRC: ").append(emp.getNrc()).append(", ");
+	            textContent.append("Phone: ").append(emp.getPhone()).append(", ");
+	            textContent.append("Email: ").append(emp.getEmail()).append(", ");
+	            textContent.append("DOB: ").append(emp.getDob()).append(", ");
+	            textContent.append("Rank: ").append(emp.getRank()).append(", ");
+	            textContent.append("Department: ").append(emp.getDep()).append(", ");
+	            textContent.append("Address: ").append(emp.getAddress()).append("\n");
+	        }
+
+	        return ResponseEntity.ok().body(textContent.toString());
+	    }
 }
