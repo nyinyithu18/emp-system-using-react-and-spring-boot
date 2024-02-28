@@ -99,7 +99,7 @@ const EmpList = () => {
           </div>
           <div>
             <ExcelExport excelData={empLeaveData} fileName={fileName} />
-          </div>
+          </div>          
           <div>
             <Link to="/">
               <Button className="btn bg-blue-500 w-20">New</Button>

@@ -4,7 +4,7 @@ import { Link, useParams } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
 import { api } from "../api/ApiResources";
 
-const EmpDataPrint = ({ empData }) => {
+const EmpDataPrint = ({ empData, count }) => {
   const printRef = useRef();
   const [openModal, setOpenModal] = useState(false);
 
@@ -48,7 +48,7 @@ const EmpDataPrint = ({ empData }) => {
       }
     });
     setSelectedInterests(selectedEmpInterests);
-  }, [empInterestList, emp_id]);
+  }, [empInterestList, emp_id, count]);
 
   return (
     <div>
@@ -221,7 +221,7 @@ const EmpDataPrint = ({ empData }) => {
 
           <Button
             className="btn bg-red-500"
-            onClick={() => setOpenModal(false)}
+            //onClick={() => setOpenModal(false)}
           >
             PDF
           </Button>

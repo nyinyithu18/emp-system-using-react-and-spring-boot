@@ -17,7 +17,6 @@ import {
 import { Link } from "react-router-dom";
 import { api } from "../api/ApiResources";
 import { leaveDataPost, leaveEditData } from "../service/LeaveService";
-import { useReactToPrint } from "react-to-print";
 import EmpDataPrint from "./EmpDataPrint";
 import axios from "axios";
 
@@ -97,7 +96,7 @@ const EditEmpData = () => {
       address: empData.address, 
     };
     */
-
+    
     const formData = new FormData();
     formData.append("emp_id", emp_id.emp_id);
     formData.append("emp_name", empData.emp_name);
@@ -105,8 +104,8 @@ const EditEmpData = () => {
     formData.append("phone", empData.phone);
     formData.append("email", empData.email);
     formData.append("dob", empData.dob);
-    formData.append("rank", rank);
-    formData.append("dep", dep);
+    formData.append("rank", rank ? rank : empData.rank);
+    formData.append("dep", dep ? dep : empData.dep);
     formData.append("address", empData.address);
     formData.append("checkdelete", empData.checkdelete);
     formData.append("image", image ? image : empData.image); // Include updated image or existing image
@@ -123,7 +122,7 @@ const EditEmpData = () => {
           },
         }
       );
-      console.log("Response:", response);
+      //console.log("Response:", response);
       alert("Employee Data saved successfully");
     } catch (error) {
       console.log("Error posting emp data: ", error);
@@ -153,6 +152,7 @@ const EditEmpData = () => {
       }
     }
 
+
     for (const interestId of selectedInterests) {
       if (interestId !== undefined) {
         const existingInterest = empInterestList.find(
@@ -160,30 +160,61 @@ const EditEmpData = () => {
             empinterest.emp_id == emp_id.emp_id &&
             empinterest.interest_id == interestId
         );
-
+      
         if (existingInterest) {
-          if (
-            existingInterest.emp_id == emp_id.emp_id &&
-            existingInterest.interest_id == interestId
-          ) {
+          const interestCheckTrue = empInterestList.find(
+            (empInterests) =>
+              empInterests.emp_id == emp_id.emp_id &&
+              empInterests.interest_checked == true &&
+              empInterests.interest_id == interestId
+          );
+
+          if (interestCheckTrue) {
             const editEmpInterestData = {
-              empinterest_id: existingInterest.empinterest_id,
+              empinterest_id: interestCheckTrue.empinterest_id,
               emp_id: emp_id.emp_id,
-              interest_id: existingInterest.interest_id,
-              interest_checked: !existingInterest.interest_checked,
+              interest_id: interestCheckTrue.interest_id,
+              interest_checked: !interestCheckTrue.interest_checked,
             };
             EditEmpInterests(editEmpInterestData);
-          } else {
-            const editEmpInterestData = {
-              empinterest_id: existingInterest.empinterest_id,
-              emp_id: emp_id.emp_id,
-              interest_id: existingInterest.interest_id,
-              interest_checked: !existingInterest.interest_checked,
-            };
-            EditEmpInterests(editEmpInterestData);
+           // console.log("true");
           }
 
-          //console.log("Edit interest:", editEmpInterestData);
+          const interestCheckFalse = empInterestList.find(
+            (empInterests) =>
+              empInterests.emp_id == emp_id.emp_id &&
+              empInterests.interest_checked == false &&
+              empInterests.interest_id == interestId
+          );
+
+          if (interestCheckFalse) {
+            const editEmpInterestData = {
+              empinterest_id: interestCheckFalse.empinterest_id,
+              emp_id: emp_id.emp_id,
+              interest_id: interestCheckFalse.interest_id,
+              interest_checked: interestCheckFalse.interest_checked,
+            };
+            EditEmpInterests(editEmpInterestData);
+            //console.log("false");
+          }
+
+          const otherInterests = empInterestList.filter(
+            (empInterests) =>
+              empInterests.emp_id == emp_id.emp_id &&
+              empInterests.interest_checked == false &&
+              !selectedInterests.includes(empInterests.interest_id)
+          );
+
+          for (const interest of otherInterests) {
+            const editEmpInterestData = {
+              empinterest_id: interest.empinterest_id,
+              emp_id: emp_id.emp_id,
+              interest_id: interest.interest_id,
+              interest_checked: !interest.interest_checked,
+            };
+            EditEmpInterests(editEmpInterestData);
+            //console.log("interestcheck");
+          }
         } else {
           const editEmpInterestData = {
             emp_id: emp_id.emp_id,
@@ -194,13 +225,16 @@ const EditEmpData = () => {
           );
           //console.log("Add interest:", addInterestRes);
         }
-      }
+       
+      } 
     }
 
     setNameError("");
     setNrcError("");
     setPhoneError("");
     setEmailError("");
+
+    setCount(count + 1);
   };
 
   const EditEmpInterests = async (interestsData) => {
@@ -345,7 +379,7 @@ const EditEmpData = () => {
   const onImageChange = (event) => {
     setImages(event.target.files[0]);
   };
-  console.log(image);
+
   //console.log(selectedInterests);
   const handleInterestEditChange = (event) => {
     const interestId = parseInt(event.target.value);
@@ -685,7 +719,7 @@ const EditEmpData = () => {
           >
             Update
           </Button>
-          <EmpDataPrint empData={empData} />
+          <EmpDataPrint empData={empData} count={count} />
           <Link to="/empList">
             <Button className="btn bg-blue-500 w-20">List</Button>
           </Link>

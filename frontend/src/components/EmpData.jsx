@@ -256,10 +256,9 @@ const EmpData = () => {
       setLeaveEntries([
         { emp_id: "", leave_type: "", from_date: "", to_date: "", days: "" },
       ]);
+      setSelectedInterests([])
     }
   };
-
-  //console.log(selectedInterests);
 
   // Fetch Rank and Department
   useEffect(() => {
@@ -369,13 +368,10 @@ const EmpData = () => {
         <div className="lg:flex lg:justify-around lg:w-full">
           <div className="flex justify-center justify-items-center mt-3 lg:mt-12 lg:pt-4">
             <div>
-              <h1 className="text-center text-lg mb-3">
-                {image ? image.name : "Choose an image"}
-              </h1>
               <div onClick={handleImageClick} className="cursor-pointer w-56">
                 {image ? (
                   <img
-                    className="rounded-full"
+                    className="rounded-full h-56 w-56 object-cover"
                     src={URL.createObjectURL(image)}
                     alt=""
                   />
@@ -493,7 +489,7 @@ const EmpData = () => {
             </div>
             <div className="max-w-md">
               <div className="mb-2 block">
-                <Label htmlFor="rank" value="Rank" />
+                <Label htmlFor="rank">Rank</Label>
               </div>
               <Select
                 id="rank"
@@ -575,7 +571,7 @@ const EmpData = () => {
                     typeof="checkbox"
                       id={`interest_${interest.interest_id}`}
                       name={`interest_${interest.interest_id}`}
-                      value={interest.interest_id}           
+                      value={interest.interest_id}  
                       onChange={handleInterestChange}
                     />
                   </div>
