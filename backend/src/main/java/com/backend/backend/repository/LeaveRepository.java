@@ -15,5 +15,6 @@ public interface LeaveRepository {
 	public List<EmpModel> leaveList();
 	public List<EmpModel> empLeaveList();
 	public EmpModel searchByLeaveId(int leave_id);
+	public List<EmpModel> findLeaveByEmployeeId(int emp_id);
 	public int editLeave(EmpModel empModel);
 }

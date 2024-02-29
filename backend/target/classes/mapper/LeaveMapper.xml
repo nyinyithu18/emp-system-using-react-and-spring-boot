@@ -43,6 +43,10 @@
     		SELECT leave_id, emp_id, leave_type, from_date, to_date, days, deleted FROM empleave WHERE leave_id=#{leave_id};
     	</select>
     	
+    	<select id="findLeaveByEmployeeId" resultMap="LeaveResultMap" parameterType="int">
+    		SELECT leave_id, emp_id, leave_type, from_date, to_date, days, deleted FROM empleave WHERE emp_id=#{emp_id};
+    	</select>
+    	
     	<select id="empLeaveList" resultMap="LeaveResultMap">
 			SELECT employee.emp_id, employee.emp_name, employee.nrc, employee.phone, employee.email, employee.dob, employee.rank, employee.department, employee.address, employee.checkdelete , employee.image , empleave.leave_type, empleave.leave_id, empleave.from_date, empleave.to_date, empleave.days, empleave.deleted FROM employee FULL OUTER JOIN empleave ON employee.emp_id = empleave.emp_id ORDER BY employee.emp_id;  
 		</select>

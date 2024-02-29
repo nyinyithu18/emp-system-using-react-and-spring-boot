@@ -30,6 +30,10 @@
 			SELECT empinterests.empinterest_id, empinterests.interest_checked, employee.emp_id, interests.interest_id, interests.interest_name FROM empinterests INNER JOIN employee ON employee.emp_id = empinterests.emp_id INNER JOIN interests ON empinterests.interest_id = interests.interest_id;		
 		</select>
 		
+		<select id="findInterestsByEmployeeId" resultMap="EmpInterestResultMap" parameterType="int">
+    		SELECT interests.interest_name FROM empinterests INNER JOIN employee ON employee.emp_id = empinterests.emp_id INNER JOIN interests ON empinterests.interest_id = interests.interest_id WHERE employee.emp_id=#{emp_id};		
+    	</select>
+		
 		<update id="editEmpInterest" parameterType="EmpModel">
 			UPDATE empinterests SET emp_id=#{emp_id}, interest_id=#{interest_id}, interest_checked=#{interest_checked} WHERE empinterest_id=#{empinterest_id};
 		</update>

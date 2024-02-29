@@ -1,6 +1,9 @@
 package com.backend.backend.controller;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +24,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.backend.backend.model.EmpModel;
 import com.backend.backend.service.empserviceimpl.EmpServiceImpl;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
@@ -127,23 +132,51 @@ return empServiceImpl.addEmp(empModel);
 		return empServiceImpl.editEmpImage(empModel);
 	}
 	
-	 @GetMapping(value = "/printEmpList", produces = MediaType.TEXT_PLAIN_VALUE)
-	    @ResponseBody
-	    public ResponseEntity<String> printEmpList() {
-	        List<EmpModel> empList = empServiceImpl.empList();
-	        StringBuilder textContent = new StringBuilder();
-	        for (EmpModel emp : empList) {
-	            textContent.append("ID: ").append(emp.getEmp_id()).append(", ");
-	            textContent.append("Name: ").append(emp.getEmp_name()).append(", ");
-	            textContent.append("NRC: ").append(emp.getNrc()).append(", ");
-	            textContent.append("Phone: ").append(emp.getPhone()).append(", ");
-	            textContent.append("Email: ").append(emp.getEmail()).append(", ");
-	            textContent.append("DOB: ").append(emp.getDob()).append(", ");
-	            textContent.append("Rank: ").append(emp.getRank()).append(", ");
-	            textContent.append("Department: ").append(emp.getDep()).append(", ");
-	            textContent.append("Address: ").append(emp.getAddress()).append("\n");
-	        }
-
-	        return ResponseEntity.ok().body(textContent.toString());
-	    }
+	@GetMapping(value = "/printEmpDetails", produces = MediaType.TEXT_PLAIN_VALUE)
+	@ResponseBody
+	public ResponseEntity<String> printEmpDetails(@RequestParam (name = "emp_id") String emp_id) {
+		int empId = Integer.parseInt(emp_id);
+		EmpModel emp = empServiceImpl.searchById(empId);
+		
+		StringBuilder textContent = new StringBuilder();
+		textContent.append("                      Empllyee Details   \n");
+		textContent.append("ID          >> ").append(emp.getEmp_id()).append("\n");
+        textContent.append("Name        >> ").append(emp.getEmp_name()).append("\n");
+        textContent.append("NRC         >> ").append(emp.getNrc()).append("\n");
+        textContent.append("Phone       >> ").append(emp.getPhone()).append("\n");
+        textContent.append("Email       >> ").append(emp.getEmail()).append("\n");
+        textContent.append("DOB         >> ").append(emp.getDob()).append("\n");
+        textContent.append("Rank        >> ").append(emp.getRank()).append("\n");
+        textContent.append("Department  >> ").append(emp.getDep()).append("\n");
+        textContent.append("Address     >> ").append(emp.getAddress()).append("\n");
+	
+        return ResponseEntity.ok().body(textContent.toString());
+	}
+	
+	
+	public void pdfExport(EmpServiceImpl empServiceImpl) {
+		this.empServiceImpl = empServiceImpl;
+	}
+	
+	@GetMapping("/pdfExport/{emp_id}")
+	@ResponseBody
+	public void empPDFExport(@PathVariable("emp_id") String emp_id, HttpServletResponse response) {
+		response.setContentType("application/pdf");
+		DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd:hh:mm:ss");
+		String currentDateTime = dateFormatter.format(new Date());
+		
+		String headerKey = "Content-Disposition";
+		String headerValue = "attachment; filename=pdf_" + currentDateTime + ".pdf";
+		response.setHeader(headerKey, headerValue);
+		
+		
+		try {
+			int empID = Integer.parseInt(emp_id);	
+			byte[] pdfContent = empServiceImpl.pdfExport(empID);
+			response.getOutputStream().write(pdfContent);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 }

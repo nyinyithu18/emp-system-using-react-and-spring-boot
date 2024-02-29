@@ -12,4 +12,5 @@ public interface EmpInterestRepository {
 	public int addEmpInterest(EmpModel empModel);
 	public List<EmpModel> empInterestList();
 	public int editEmpInterest(EmpModel empModel);
+	public List<EmpModel> findInterestsByEmployeeId(int emp_id);
 }

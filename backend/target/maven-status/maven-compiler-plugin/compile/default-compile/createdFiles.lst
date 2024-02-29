@@ -1,6 +1,10 @@
 com\backend\backend\BackendApplication.class
+com\backend\backend\service\EmpInterestService.class
+com\backend\backend\service\InterestService.class
 com\backend\backend\service\empserviceimpl\DepServiceImpl.class
 com\backend\backend\service\empserviceimpl\LeaveServiceImpl.class
+com\backend\backend\repository\InterestsRepository.class
+com\backend\backend\controller\InterestController.class
 com\backend\backend\service\empserviceimpl\EmpServiceImpl.class
 com\backend\backend\controller\EmpController.class
 com\backend\backend\model\EmpModel.class
@@ -9,6 +13,10 @@ com\backend\backend\service\DepService.class
 com\backend\backend\service\empserviceimpl\RankServiceImpl.class
 com\backend\backend\service\empserviceimpl\LeaveServiceImpl$1.class
 com\backend\backend\controller\LeaveController.class
+com\backend\backend\service\empserviceimpl\EmpInterestServiceImpl.class
+com\backend\backend\repository\EmpInterestRepository.class
+com\backend\backend\service\empserviceimpl\InterestServiceImpl.class
+com\backend\backend\controller\EmpInterestController.class
 com\backend\backend\service\LeaveService.class
 com\backend\backend\service\RankService.class
 com\backend\backend\service\EmpService.class

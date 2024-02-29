@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.backend.backend.model.EmpModel;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 public interface EmpService {
 
 	public int addEmp(EmpModel empModel);
@@ -12,4 +14,5 @@ public interface EmpService {
 	public EmpModel searchById(int emp_id);
 	public int editEmp(EmpModel empModel);
 	public int editEmpImage(EmpModel empModel);
+	public byte[] pdfExport(int emp_id);
 }
