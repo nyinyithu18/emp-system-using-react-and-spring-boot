@@ -17,7 +17,6 @@ import {
 import { Link } from "react-router-dom";
 import { api } from "../api/ApiResources";
 import { leaveDataPost, leaveEditData } from "../service/LeaveService";
-import EmpDataPrint from "./EmpDataPrint";
 import axios from "axios";
 
 const EditEmpData = () => {
@@ -288,6 +287,23 @@ const EditEmpData = () => {
     });
     setSelectedInterests(selectedEmpInterests);
   }, [empInterestList, emp_id]);
+
+  // Handle Print
+  const handlePrint = async() =>{
+    try{
+      const response = await api.get(`/pdfExport/${emp_id.emp_id}`, {
+        responseType: 'blob',
+      })
+
+      const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
+
+      const pdfUrl = window.URL.createObjectURL(pdfBlob);
+
+      window.open(pdfUrl);
+    } catch(error){
+      console.error('Error generating PDF:', error);
+    }
+  }
 
   // Add Leave Form
   const handleAddEntry = () => {
@@ -719,7 +735,9 @@ const EditEmpData = () => {
           >
             Update
           </Button>
-          <EmpDataPrint empData={empData} count={count} />
+          <Button onClick={handlePrint} type="button" className="bg-blue-500 w-20">
+            Print
+          </Button>
           <Link to="/empList">
             <Button className="btn bg-blue-500 w-20">List</Button>
           </Link>
