@@ -6,8 +6,8 @@
 This project consists of two Applications: One is a Spring Boot RestAPI called spring-backend and another is a react-frontend.
 This project is full stack project as a small employee management system.
 User can perform such as adding with image, updating, searching , deleting for employees datas in the database.
-User can search employee datas with ID or Name and delete is soft delete for employee and employee leave.
-Next features consists import, export with excel file, employee datas with image can save and print employee of each can print.
+User can search employee datas with ID or Name , add is dynamic add and delete is soft delete for employee and employee leave.
+Next features consists import, export with excel file, employee datas with image can save and print for employee of each can print.
 ```
 
 ### Tech 
@@ -71,6 +71,6 @@ run the application
 mvn spring-boot:run
 ```
 test the host
-```
+
 http://localhost:8080/empList
-```
+
