@@ -27,13 +27,12 @@ const EditEmpData = () => {
     phone: "",
     email: "",
     dob: "",
+    rank: "",
+    dep: "",
     address: "",
     image: "",
   });
   const emp_id = useParams();
-
-  const [rank, setRank] = useState("");
-  const [dep, setDep] = useState("");
 
   const [rankData, setRankData] = useState([]);
   const [depData, setDepData] = useState([]);
@@ -82,20 +81,7 @@ const EditEmpData = () => {
       setEmailError("Email is required");
       return;
     }
-    /*
-    const empEditData = {
-      emp_id: emp_id.emp_id,
-      emp_name: empData.emp_name,
-      nrc: empData.nrc,
-      phone: empData.phone,
-      email: empData.email,
-      dob: empData.dob,
-      rank: rank,
-      dep: dep,
-      address: empData.address, 
-    };
-    */
-    
+
     const formData = new FormData();
     formData.append("emp_id", emp_id.emp_id);
     formData.append("emp_name", empData.emp_name);
@@ -103,8 +89,8 @@ const EditEmpData = () => {
     formData.append("phone", empData.phone);
     formData.append("email", empData.email);
     formData.append("dob", empData.dob);
-    formData.append("rank", rank ? rank : empData.rank);
-    formData.append("dep", dep ? dep : empData.dep);
+    formData.append("rank", empData.rank);
+    formData.append("dep", empData.dep);
     formData.append("address", empData.address);
     formData.append("checkdelete", empData.checkdelete);
     formData.append("image", image ? image : empData.image); // Include updated image or existing image
@@ -151,7 +137,6 @@ const EditEmpData = () => {
       }
     }
 
-
     for (const interestId of selectedInterests) {
       if (interestId !== undefined) {
         const existingInterest = empInterestList.find(
@@ -159,7 +144,7 @@ const EditEmpData = () => {
             empinterest.emp_id == emp_id.emp_id &&
             empinterest.interest_id == interestId
         );
-      
+
         if (existingInterest) {
           const interestCheckTrue = empInterestList.find(
             (empInterests) =>
@@ -176,7 +161,7 @@ const EditEmpData = () => {
               interest_checked: !interestCheckTrue.interest_checked,
             };
             EditEmpInterests(editEmpInterestData);
-           // console.log("true");
+            // console.log("true");
           }
 
           const interestCheckFalse = empInterestList.find(
@@ -224,8 +209,7 @@ const EditEmpData = () => {
           );
           //console.log("Add interest:", addInterestRes);
         }
-       
-      } 
+      }
     }
 
     setNameError("");
@@ -289,21 +273,21 @@ const EditEmpData = () => {
   }, [empInterestList, emp_id]);
 
   // Handle Print
-  const handlePrint = async() =>{
-    try{
+  const handlePrint = async () => {
+    try {
       const response = await api.get(`/pdfExport/${emp_id.emp_id}`, {
-        responseType: 'blob',
-      })
+        responseType: "blob",
+      });
 
-      const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
+      const pdfBlob = new Blob([response.data], { type: "application/pdf" });
 
       const pdfUrl = window.URL.createObjectURL(pdfBlob);
 
       window.open(pdfUrl);
-    } catch(error){
-      console.error('Error generating PDF:', error);
+    } catch (error) {
+      console.error("Error generating PDF:", error);
     }
-  }
+  };
 
   // Add Leave Form
   const handleAddEntry = () => {
@@ -417,7 +401,7 @@ const EditEmpData = () => {
               <div onClick={handleImageClick} className="cursor-pointer w-56">
                 {empData.image || image ? (
                   <img
-                    className="rounded-full"
+                    className="rounded-full w-56 h-56 object-cover"
                     src={
                       image
                         ? URL.createObjectURL(image)
@@ -539,14 +523,15 @@ const EditEmpData = () => {
               </div>
               <Select
                 id="rank"
-                onChange={(e) => setRank(e.target.value)}
+                onChange={(e) => handle(e)}
                 className="w-96"
+                value={empData.rank}
                 required
               >
                 {rankData.length > 0 ? (
                   rankData.map((rank) => {
                     return (
-                      <option value={rank.rank_name} key={rank.rank_id}>
+                      <option value={rank.value} key={rank.rank_id}>
                         {rank.rank_name}
                       </option>
                     );
@@ -563,16 +548,14 @@ const EditEmpData = () => {
               <Select
                 id="dep"
                 required
-                onChange={(e) => setDep(e.target.value)}
+                onChange={(e) => handle(e)}
+                value={empData.dep}
                 className="w-96"
               >
                 {depData.length > 0 ? (
                   depData.map((department) => {
                     return (
-                      <option
-                        value={department.dep_name}
-                        key={department.dep_id}
-                      >
+                      <option key={department.dep_id} value={department.value}>
                         {department.dep_name}
                       </option>
                     );
@@ -735,7 +718,11 @@ const EditEmpData = () => {
           >
             Update
           </Button>
-          <Button onClick={handlePrint} type="button" className="bg-blue-500 w-20">
+          <Button
+            onClick={handlePrint}
+            type="button"
+            className="bg-blue-500 w-20"
+          >
             Print
           </Button>
           <Link to="/empList">

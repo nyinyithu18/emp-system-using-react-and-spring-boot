@@ -10,7 +10,7 @@ import {
 } from "flowbite-react";
 import { Link } from "react-router-dom";
 import { api } from "../api/ApiResources";
-import { empDataPost, empInterestsDataPost } from "../service/EmpService";
+import { empInterestsDataPost } from "../service/EmpService";
 import { leaveDataPost } from "../service/LeaveService";
 import axios from "axios";
 
@@ -125,68 +125,6 @@ const EmpData = () => {
     }
 
     {
-      /*
-      formData.append('emp_id', empId);
-      formData.append('emp_name', empName);
-      formData.append('nrc', nrc);
-      formData.append('phone',phone);
-      formData.append('email',email);
-      formData.append('dob',dob);
-      formData.append('rank',rankData);
-      formData.append('dep',dep);
-      formData.append('address',address);
-      formData.append('checkdelete', false);
-      formData.append('image',image);
-
-
-      const formData = new FormData();
-      formData.append(
-        "empData",
-        JSON.stringify({
-          emp_id: empId,
-          emp_name: empName,
-          nrc: nrc,
-          phone: phone,
-          email: email,
-          dob: dob,
-          rank: rankdata,
-          dep: dep,
-          address: address,
-          checkdelete: false,
-        })
-      );
-      formData.append("image", image);
-      console.log(empId, empName);
-      
-      try {
-        const res = await axios.post("http://localhost:8080/addEmp", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-        console.log("Success", res);
-        alert("Employee Data saved successfully");
-      } catch (error) {
-        console.error("Error", error);
-      }
-      console.log(formData); 
-
-      const postEmpData = {
-        image: image,
-        emp_id: empId,
-        emp_name: empName,
-        nrc: nrc,
-        phone: phone,
-        email: email,
-        dob: dob,
-        rank: rankdata,
-        dep: dep,
-        address: address,
-        checkdelete: false,
-      };
-*/
-
-
       const formData = new FormData();
       formData.append("emp_id", empId);
       formData.append("emp_name", empName);
@@ -253,10 +191,10 @@ const EmpData = () => {
       setDep("");
       setAddress("");
       setImages("");
-      setLeaveEntries([
-        { emp_id: "", leave_type: "", from_date: "", to_date: "", days: "" },
-      ]);
-      setSelectedInterests([])
+      setLeaveEntries([]);
+      setSelectedInterests([]);
+
+      window.location.reload();
     }
   };
 
@@ -350,7 +288,9 @@ const EmpData = () => {
     if (checked) {
       setSelectedInterests([...selectedInterests, value]);
     } else {
-      setSelectedInterests(selectedInterests.filter(interest => interest !== value));
+      setSelectedInterests(
+        selectedInterests.filter((interest) => interest !== value)
+      );
     }
   };
 
@@ -568,10 +508,10 @@ const EmpData = () => {
                       value={interest.interest_name}
                     />
                     <Checkbox
-                    typeof="checkbox"
+                      typeof="checkbox"
                       id={`interest_${interest.interest_id}`}
                       name={`interest_${interest.interest_id}`}
-                      value={interest.interest_id}  
+                      value={interest.interest_id}
                       onChange={handleInterestChange}
                     />
                   </div>
