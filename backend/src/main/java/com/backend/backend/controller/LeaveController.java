@@ -32,7 +32,7 @@ public class LeaveController {
 		return leaveServiceImpl.addLeave(empModel);
 	}
 	
-	@PostMapping(value = "uploadFile")
+	@PostMapping(value = "uploadFile", consumes = "multipart/form-data")
 	@ResponseBody
 	public String excelUpload(@RequestParam ("file") MultipartFile file) {
 		leaveServiceImpl.uploadFile(file);
