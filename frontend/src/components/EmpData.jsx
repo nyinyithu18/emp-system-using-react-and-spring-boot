@@ -197,15 +197,24 @@ const EmpData = () => {
       window.location.reload();
     }
   };
-
+  const token = localStorage.getItem("token");
+  console.log(token); 
+  
   // Fetch Rank and Department
   useEffect(() => {
     const fetchData = async () => {
       const rankResponse = await api.get("/rankList");
       setRankData(rankResponse.data);
 
-      const depResponse = await api.get("/depList");
+      const depResponse = await axios.get("http://localhost:8080/depList", {
+        headers: {
+          "Authorization": `Bearer ${token}` // Attach token here
+        },
+        withCredentials: true, // Optional: Include cookies if needed
+      });
       setDepData(depResponse.data);
+      console.log(depResponse.data);
+      
 
       const interestRes = await api.get("/interestList");
       setInterests(interestRes.data);
