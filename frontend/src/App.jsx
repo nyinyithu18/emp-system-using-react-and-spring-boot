@@ -5,7 +5,6 @@ import { Route, Routes } from "react-router";
 import Header from "./components/Header";
 import EditEmpData from "./components/EditEmpData";
 import PageNotFound from "./components/PageNotFound";
-import LoginSignUp from "./components/loginsignup/LoginSignUp";
 
 const App = () => {
   return (
@@ -17,7 +16,6 @@ const App = () => {
         <Route path="/importExcelFile" element={<EmpList/>} />
         <Route path="/editEmpData/:emp_id" element={<EditEmpData />} />
         <Route path="/reportEmpDatas/:emp_id" element={<EditEmpData/>} />   
-        <Route path="/login" element={<LoginSignUp/>} />
         <Route path="*" element={<PageNotFound/>} />
       </Routes>
     </>

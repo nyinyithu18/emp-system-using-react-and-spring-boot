@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.backend.backend.model.DepModel;
 import com.backend.backend.service.empserviceimpl.DepServiceImpl;
 
-@RestController
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+@RestController
 public class DepController {
 
 	@Autowired

@@ -9,7 +9,7 @@ import {
   Checkbox,
 } from "flowbite-react";
 import { Link } from "react-router-dom";
-import { api } from "../api/ApiResources";
+import { api, setAuthToken } from "../api/ApiResources";
 import { empInterestsDataPost } from "../service/EmpService";
 import { leaveDataPost } from "../service/LeaveService";
 import axios from "axios";
@@ -196,9 +196,7 @@ const EmpData = () => {
 
       window.location.reload();
     }
-  };
-  const token = localStorage.getItem("token");
-  console.log(token); 
+  }; 
   
   // Fetch Rank and Department
   useEffect(() => {
@@ -206,15 +204,8 @@ const EmpData = () => {
       const rankResponse = await api.get("/rankList");
       setRankData(rankResponse.data);
 
-      const depResponse = await axios.get("http://localhost:8080/depList", {
-        headers: {
-          "Authorization": `Bearer ${token}` // Attach token here
-        },
-        withCredentials: true, // Optional: Include cookies if needed
-      });
-      setDepData(depResponse.data);
-      console.log(depResponse.data);
-      
+      const depResponse = await api.get("/depList")
+      setDepData(depResponse.data);      
 
       const interestRes = await api.get("/interestList");
       setInterests(interestRes.data);
